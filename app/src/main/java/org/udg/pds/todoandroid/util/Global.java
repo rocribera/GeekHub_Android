@@ -31,7 +31,9 @@ public class Global {
     // public static final String BASE_URL_PORTFORWARDING = "http://10.0.3.2:8080";
     // For debugging with real device using port forwarding
     // https://developer.chrome.com/devtools/docs/remote-debugging?hl=de#port-forwarding
-    public static final String BASE_URL_PORTFORWARDING = "http://localhost:8080";
+
+    //public static final String BASE_URL_PORTFORWARDING = "http://localhost:8080";
+    public static final String BASE_URL_PORTFORWARDING = "http://private-anon-d46270d5b4-geekhub.apiary-mock.com";
     public static final String BASE_URL_GENYMOTION = "http://10.0.3.2:8080";
 
 
