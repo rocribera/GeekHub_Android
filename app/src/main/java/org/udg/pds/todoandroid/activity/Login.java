@@ -38,13 +38,23 @@ public class Login extends AppCompatActivity {
 
         mTodoService = ((TodoApp)this.getApplication()).getAPI();
 
-        Button b = (Button)findViewById(R.id.login_button);
+        Button b_log = (Button)findViewById(R.id.login_button);
         // This is teh listener that will be used when the user presses the "Login" button
-        b.setOnClickListener(new View.OnClickListener() {
+        b_log.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 EditText u = (EditText) Login.this.findViewById(R.id.login_username);
                 EditText p = (EditText) Login.this.findViewById(R.id.login_password);
                 Login.this.checkCredentials(u.getText().toString(), p.getText().toString());
+            }
+        });
+
+        Button b_reg = (Button)findViewById(R.id.register_button);
+        // This is the listener that will be used when the user presses the "Register" button
+        b_reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Login.this, RegisterActivity.class);
+                startActivity(i);
             }
         });
 

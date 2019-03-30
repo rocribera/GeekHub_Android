@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
         <android.support.constraint.Guideline
@@ -88,6 +88,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="register"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
     </android.support.constraint.ConstraintLayout>
 
