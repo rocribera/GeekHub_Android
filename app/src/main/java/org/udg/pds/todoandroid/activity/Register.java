@@ -52,6 +52,8 @@ public class Register extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     Register.this.startActivity(new Intent(Register.this, NavigationActivity.class));
+                    Intent intent = new Intent("finish_activity");
+                    sendBroadcast(intent);
                     Register.this.finish();
                 } else {
                     Toast toast = Toast.makeText(Register.this, "Error register in", Toast.LENGTH_SHORT);

@@ -1,6 +1,9 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -57,6 +60,16 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals("finish_activity")) {
+                    Login.this.finish();
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
     }
     // This method is called when the "Login" button is pressed in the Login fragment
     public void checkCredentials(String username, String password) {
