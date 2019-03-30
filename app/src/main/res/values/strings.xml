@@ -24,5 +24,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_splash_screen">TODO</string>
     <string name="splash_content">TODO</string>
+    <string name="user_name">Usuari</string>
+    <string name="gameName">Game Name</string>
+    <string name="gameDescription">Game Description</string>
+    <string name="gameCategories">Game Categories</string>
 
 </resources>

@@ -1,10 +1,13 @@
 package org.udg.pds.todoandroid.entity;
 
-/**
- * Created by imartin on 12/02/16.
- */
+import java.util.List;
+
+
 public class User {
   public long id;
-  public String username;
-  public String email;
+  public String name;
+  public String image;
+  public String desc;
+  public List<String> games;
+  public String valoration;
 }
