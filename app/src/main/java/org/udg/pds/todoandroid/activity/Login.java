@@ -1,6 +1,5 @@
 package org.udg.pds.todoandroid.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +38,7 @@ public class Login extends AppCompatActivity {
         mTodoService = ((TodoApp)this.getApplication()).getAPI();
 
         Button b_log = (Button)findViewById(R.id.login_button);
-        // This is teh listener that will be used when the user presses the "Login" button
+        // This is the listener that will be used when the user presses the "Login" button
         b_log.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 EditText u = (EditText) Login.this.findViewById(R.id.login_username);
@@ -53,7 +52,7 @@ public class Login extends AppCompatActivity {
         b_reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Login.this, RegisterActivity.class);
+                Intent i = new Intent(Login.this, Register.class);
                 startActivity(i);
             }
         });
