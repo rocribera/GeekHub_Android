@@ -4,7 +4,9 @@ import org.udg.pds.todoandroid.entity.IdObject;
 import org.udg.pds.todoandroid.entity.Task;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserLogin;
+import org.udg.pds.todoandroid.entity.UserRegister;
 import org.udg.pds.todoandroid.entity.Game;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -22,6 +24,9 @@ public interface TodoApi {
 
   @GET("/users/check")
   Call<String> check();
+
+  @POST("/users/register")
+  Call<User> register(@Body UserRegister register);
 
   @POST("/tasks")
   Call<IdObject> addTask(@Body Task task);
