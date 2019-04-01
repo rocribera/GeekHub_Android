@@ -1,7 +1,9 @@
 package org.udg.pds.todoandroid.activity;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -38,9 +40,9 @@ public class Login extends AppCompatActivity {
 
         mTodoService = ((TodoApp)this.getApplication()).getAPI();
 
-        Button b = (Button)findViewById(R.id.login_button);
-        // This is teh listener that will be used when the user presses the "Login" button
-        b.setOnClickListener(new View.OnClickListener() {
+        Button b_log = (Button)findViewById(R.id.login_button);
+        // This is the listener that will be used when the user presses the "Login" button
+        b_log.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 EditText u = (EditText) Login.this.findViewById(R.id.login_username);
                 EditText p = (EditText) Login.this.findViewById(R.id.login_password);
@@ -48,6 +50,26 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        Button b_reg = (Button)findViewById(R.id.register_button);
+        // This is the listener that will be used when the user presses the "Register" button
+        b_reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Login.this, Register.class);
+                startActivity(i);
+            }
+        });
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals("finish_activity")) {
+                    Login.this.finish();
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
     }
     // This method is called when the "Login" button is pressed in the Login fragment
     public void checkCredentials(String username, String password) {

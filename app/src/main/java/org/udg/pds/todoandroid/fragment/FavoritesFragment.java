@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import org.udg.pds.todoandroid.R;
+import org.udg.pds.todoandroid.activity.GamesDirectory;
 import org.udg.pds.todoandroid.activity.NavDrawerActivity;
 
 /**
@@ -32,7 +33,7 @@ public class FavoritesFragment extends Fragment {
     button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent i = new Intent(FavoritesFragment.this.getActivity(), NavDrawerActivity.class);
+        Intent i = new Intent(FavoritesFragment.this.getActivity(), GamesDirectory.class);
         startActivity(i);
       }
     });
