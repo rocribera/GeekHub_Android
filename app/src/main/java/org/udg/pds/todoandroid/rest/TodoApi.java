@@ -1,6 +1,8 @@
 package org.udg.pds.todoandroid.rest;
 
+import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.IdObject;
+import org.udg.pds.todoandroid.entity.Post;
 import org.udg.pds.todoandroid.entity.Task;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserLogin;
@@ -37,6 +39,12 @@ public interface TodoApi {
   @GET("/tasks/{id}")
   Call<Task> getTask(@Path("id") String id);
 
+  @GET("/games/{id}/posts")
+  Call<List<Post>> getPosts(@Path("id") String id);
+
+  @GET("/games/{id}")
+  Call<Game> getGame(@Path("id") String id);
+  
   @GET("/games")
   Call<List<Game>> getGames();
 
