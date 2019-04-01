@@ -5,6 +5,7 @@ import org.udg.pds.todoandroid.entity.Task;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserLogin;
 import org.udg.pds.todoandroid.entity.UserRegister;
+import org.udg.pds.todoandroid.entity.Game;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -35,6 +36,9 @@ public interface TodoApi {
 
   @GET("/tasks/{id}")
   Call<Task> getTask(@Path("id") String id);
+
+  @GET("/games")
+  Call<List<Game>> getGames();
 
 }
 
