@@ -134,10 +134,9 @@ public class GamesDirectory extends AppCompatActivity{
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int duration = Toast.LENGTH_LONG;
-
-                    Toast toast = Toast.makeText(context, String.format("Hey, I'm item %1d", position), duration);
-                    toast.show();
+                    Intent i = new Intent(GamesDirectory.this, GameProfile.class);
+                    i.putExtra("gameId",list.get(position).id);
+                    startActivity(i);
                 }
             });
         }
