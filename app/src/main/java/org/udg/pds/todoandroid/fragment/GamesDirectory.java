@@ -1,11 +1,11 @@
-package org.udg.pds.todoandroid.activity;
+package org.udg.pds.todoandroid.fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.activity.GameProfile;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
@@ -30,27 +31,29 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GamesDirectory extends AppCompatActivity{
+public class GamesDirectory extends Fragment {
+
     TodoApi mTodoService;
 
     RecyclerView mRecyclerView;
     private TRAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_directory);
+        return inflater.inflate(R.layout.game_directory, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mTodoService = ((TodoApp) this.getApplication()).getAPI();
+        mTodoService = ((TodoApp) this.getActivity().getApplication()).getAPI();
 
-        mRecyclerView = findViewById(R.id.RVGameDir);
-        mAdapter = new TRAdapter(this.getApplication());
+        mRecyclerView = getView().findViewById(R.id.RVGameDir);
+        mAdapter = new TRAdapter(this.getActivity().getApplication());
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
     }
 
     @Override
@@ -82,7 +85,7 @@ public class GamesDirectory extends AppCompatActivity{
                 if (response.isSuccessful()) {
                     GamesDirectory.this.showGameList(response.body());
                 } else {
-                    Toast.makeText(GamesDirectory.this.getBaseContext(), "Error reading games", Toast.LENGTH_LONG).show();
+                    Toast.makeText(GamesDirectory.this.getContext(), "Error reading games", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -134,7 +137,7 @@ public class GamesDirectory extends AppCompatActivity{
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i = new Intent(GamesDirectory.this, GameProfile.class);
+                    Intent i = new Intent(GamesDirectory.this.getActivity(), GameProfile.class);
                     i.putExtra("gameId",list.get(position).id);
                     startActivity(i);
                 }
@@ -192,7 +195,7 @@ public class GamesDirectory extends AppCompatActivity{
                 bimage = BitmapFactory.decodeStream(in);
 
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Error loading image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error loading image", Toast.LENGTH_SHORT).show();
             }
             return bimage;
         }
