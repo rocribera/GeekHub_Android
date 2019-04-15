@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.fragment.FavoritesFragment;
+import org.udg.pds.todoandroid.fragment.GamesDirectory;
 import org.udg.pds.todoandroid.fragment.TaskList;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
@@ -48,9 +49,12 @@ public class NavigationActivity extends AppCompatActivity {
                         .replace(R.id.main_content, new FavoritesFragment())
                         .commit();
                 break;
-            case R.id.action_schedules:
+            case R.id.action_games:
                 content.removeAllViews();
-                getLayoutInflater().inflate(R.layout.content_schedules, content);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_content, new GamesDirectory())
+                        .commit();
                 break;
             case R.id.action_tasks:
                 content.removeAllViews();

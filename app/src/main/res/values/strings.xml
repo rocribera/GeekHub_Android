@@ -28,5 +28,6 @@
     <string name="gameName">Game Name</string>
     <string name="gameDescription">Game Description</string>
     <string name="gameCategories">Game Categories</string>
+    <string name="text_games">Games</string>
 
 </resources>
