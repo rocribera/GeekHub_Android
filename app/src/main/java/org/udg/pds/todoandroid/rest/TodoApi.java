@@ -42,6 +42,9 @@ public interface TodoApi {
   @GET("/games/{id}/posts")
   Call<List<Post>> getPosts(@Path("id") String id);
 
+  @POST("/games/{id}/posts")
+  Call<String> addPost(@Path("id") String id, @Body Post post);
+
   @GET("/games/{id}")
   Call<Game> getGame(@Path("id") String id);
   

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,14 @@ public class GameProfile extends AppCompatActivity {
         mAdapter = new TRAdapter(this.getApplication());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Button b = findViewById(R.id.add_Post);
+        b.setOnClickListener(view -> {
+            Intent i = new Intent(GameProfile.this, AddPost.class);
+            Long gameId = getIntent().getExtras().getLong("gameId");
+            i.putExtra("gameId",(long)gameId);
+            startActivityForResult(i, Global.RQ_ADD_POST);
+        });
     }
 
     public void getGameInfo(){
@@ -106,7 +115,7 @@ public class GameProfile extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Global.RQ_ADD_TASK) {
+        if (requestCode == Global.RQ_ADD_POST) {
             this.updatePostList();
         }
     }
