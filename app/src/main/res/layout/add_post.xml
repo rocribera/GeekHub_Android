@@ -26,7 +26,7 @@
         <TextView
             android:id="@+id/ap_title_text"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:layout_weight="0.4"
             android:background="#e2e8ff"
@@ -34,13 +34,6 @@
             android:inputType="text"
             android:textIsSelectable="true"
             android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/ap_title_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:text="@string/button_set" />
 
     </LinearLayout>
 

@@ -58,14 +58,10 @@ public class GameProfile extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Button b = findViewById(R.id.add_Post);
-        // This is the listener to the "Add Task" button
         b.setOnClickListener(view -> {
-            // When we press the "Add Task" button, the AddTask activity is called, where
-            // we can introduce the data of the new task
-            Intent i = new Intent(GameProfile.this.getBaseContext(), AddPost.class);
-            // We launch the activity with startActivityForResult because we want to know when
-            // the launched activity has finished. In this case, when the AddTask activity has finished
-            // we will update the list to show the new task.
+            Intent i = new Intent(GameProfile.this, AddPost.class);
+            Long gameId = getIntent().getExtras().getLong("gameId");
+            i.putExtra("gameId",(long)gameId);
             startActivityForResult(i, Global.RQ_ADD_POST);
         });
     }
@@ -119,7 +115,7 @@ public class GameProfile extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Global.RQ_ADD_TASK) {
+        if (requestCode == Global.RQ_ADD_POST) {
             this.updatePostList();
         }
     }
