@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import org.udg.pds.todoandroid.R;
-import org.udg.pds.todoandroid.activity.GamesDirectory;
 import org.udg.pds.todoandroid.activity.NavDrawerActivity;
 
 /**
