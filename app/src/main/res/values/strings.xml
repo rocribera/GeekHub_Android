@@ -29,5 +29,7 @@
     <string name="gameDescription">Game Description</string>
     <string name="gameCategories">Game Categories</string>
     <string name="text_games">Games</string>
+    <string name="add_post">Add Post</string>
+    <string name="ap_title">Title:</string>
 
 </resources>

@@ -21,6 +21,7 @@ public class Global {
 
     // Resquest codes for startActivityForResult
     public static final int RQ_ADD_TASK = 1;
+    public static final int RQ_ADD_POST = 2;
 
     // IMPORTANT: you have to change the value of BASE_URL_PORTFORWARDING when deploying the app
     // OPENSHIFT

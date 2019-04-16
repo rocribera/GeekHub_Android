@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,18 @@ public class GameProfile extends AppCompatActivity {
         mAdapter = new TRAdapter(this.getApplication());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Button b = findViewById(R.id.add_Post);
+        // This is the listener to the "Add Task" button
+        b.setOnClickListener(view -> {
+            // When we press the "Add Task" button, the AddTask activity is called, where
+            // we can introduce the data of the new task
+            Intent i = new Intent(GameProfile.this.getBaseContext(), AddPost.class);
+            // We launch the activity with startActivityForResult because we want to know when
+            // the launched activity has finished. In this case, when the AddTask activity has finished
+            // we will update the list to show the new task.
+            startActivityForResult(i, Global.RQ_ADD_POST);
+        });
     }
 
     public void getGameInfo(){
