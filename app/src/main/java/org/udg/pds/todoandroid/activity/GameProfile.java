@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.Post;
+import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 
@@ -34,6 +36,7 @@ import retrofit2.Response;
 
 public class GameProfile extends AppCompatActivity {
 
+    private User u;
     TodoApi mTodoService;
 
     RecyclerView mRecyclerView;
@@ -50,6 +53,7 @@ public class GameProfile extends AppCompatActivity {
         super.onStart();
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
 
+        setThisUser();
         getGameInfo();
 
         mRecyclerView = findViewById(R.id.posts);
@@ -85,14 +89,41 @@ public class GameProfile extends AppCompatActivity {
 
     }
 
+    public void setThisUser(){
+        Call<User> call = mTodoService.getMe();
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    System.out.println("HA ENTRAT!!!!!!");
+                    u = response.body();
+
+                } else {
+                    System.out.println("FATAL!!!!!!");
+                    Toast.makeText(GameProfile.this.getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                System.out.println("FAILURE!!!!!!");
+            }
+        });
+    }
+
     public void showGameInfo(Game g){
         TextView gameName;
         TextView gameDesc;
         TextView gameCate;
+        Switch gameBook;
 
         gameName = findViewById(R.id.game_name);
         gameDesc = findViewById(R.id.game_description);
         gameCate = findViewById(R.id.game_categories);
+        gameBook = findViewById(R.id.bookmarkSwitch);
+
+        //if(u.games.contains(gameName)) gameBook.setChecked(true);
+        //else gameBook.setChecked(false);
 
         gameName.setText(g.name);
         gameDesc.setText(g.description);

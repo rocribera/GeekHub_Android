@@ -51,5 +51,8 @@ public interface TodoApi {
   @GET("/games")
   Call<List<Game>> getGames();
 
+  @GET("/users/me")
+  Call<User> getMe();
+
 }
 
