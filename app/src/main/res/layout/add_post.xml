@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:measureWithLargestChild="false">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:padding="2dp"
+        android:showDividers="beginning|middle|end">
+
+        <TextView
+            android:id="@+id/ap_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_margin="3dp"
+            android:text="@string/ap_title"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/ap_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="0.4"
+            android:background="#e2e8ff"
+            android:gravity="left|center_vertical"
+            android:inputType="text"
+            android:textIsSelectable="true"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/ap_title_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:text="@string/button_set" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/ap_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_margin="3dp"
+        android:layout_weight="0.7"
+        android:background="#e2e8ff"
+        android:gravity="top"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:padding="3dp" />
+
+    <Button
+        android:id="@+id/ap_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/button_save" />
+</LinearLayout>
