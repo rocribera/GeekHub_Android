@@ -15,7 +15,6 @@
       
         <activity android:name=".activity.GameProfile"></activity>
         <activity android:name=".activity.Register"></activity>
-        <activity android:name=".activity.GamesDirectory"></activity>
       
         <activity
             android:name=".activity.Login"
