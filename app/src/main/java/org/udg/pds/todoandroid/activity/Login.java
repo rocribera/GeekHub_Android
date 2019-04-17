@@ -32,9 +32,11 @@ import retrofit2.Response;
 public class Login extends AppCompatActivity {
 
     TodoApi mTodoService;
+    static Login login;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        login = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
@@ -60,8 +62,8 @@ public class Login extends AppCompatActivity {
             }
         });
 
-
     }
+
     // This method is called when the "Login" button is pressed in the Login fragment
     public void checkCredentials(String username, String password) {
         UserLogin ul = new UserLogin();
@@ -87,6 +89,10 @@ public class Login extends AppCompatActivity {
                 toast.show();
             }
         });
+    }
+
+    public static Login getInstance(){
+        return login;
     }
 
 }
