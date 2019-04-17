@@ -8,6 +8,6 @@ public class User {
   public String name;
   public String image;
   public String desc;
-  public List<String> games;
+  public List<Game> games;
   public String valoration;
 }
