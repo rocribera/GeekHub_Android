@@ -60,16 +60,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action.equals("finish_activity")) {
-                    Login.this.finish();
-                }
-            }
-        };
-        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
+
     }
     // This method is called when the "Login" button is pressed in the Login fragment
     public void checkCredentials(String username, String password) {

@@ -17,8 +17,9 @@
         <activity android:name=".activity.Register" />
         <activity
             android:name=".activity.Login"
+            android:noHistory="true"
             android:label="@string/app_name" />
-        <activity android:name=".activity.NavigationActivity" />
+
         <activity
             android:name=".activity.AddTask"
             android:label="@string/app_name" />
@@ -28,6 +29,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.SplashScreen"
+            android:noHistory="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash_screen"
             android:theme="@style/FullscreenTheme">
@@ -36,6 +38,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.NavigationActivity" >
         </activity>
     </application>
 

@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.Post;
+import org.udg.pds.todoandroid.entity.User;
+import org.udg.pds.todoandroid.fragment.GamesDirectory;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 
@@ -43,6 +47,64 @@ public class GameProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_profile);
+
+        Switch bookmark = (Switch) findViewById(R.id.bookmarkSwitch);
+
+        bookmark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Long gameId = getIntent().getExtras().getLong("gameId");
+                if(isChecked){
+                    Call<Game> call = mTodoService.getGame(gameId.toString());
+
+                    call.enqueue(new Callback<Game>() {
+                        @Override
+                        public void onResponse(Call<Game> call, Response<Game> response) {
+                            if (response.isSuccessful()) {
+                                Call<String> postCall = mTodoService.bookmarkGame(response.body());
+
+                                postCall.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> postCall, Response<String> response) {
+                                        if (response.isSuccessful()){
+
+                                        }
+                                        else{
+                                            Toast.makeText(GameProfile.this.getBaseContext(), "Error posting bookmarked game", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> postCall, Throwable t) {
+
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(GameProfile.this.getBaseContext(), "Error reading game", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Game> call, Throwable t) {}
+                    });
+                }
+                else{
+                    Call<String> call = mTodoService.deleteBookmark(gameId.toString());
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.isSuccessful()) {
+
+                            } else {
+                                Toast.makeText(GameProfile.this.getBaseContext(), "Error deleting bookmarked game", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {}
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -74,7 +136,7 @@ public class GameProfile extends AppCompatActivity {
             @Override
             public void onResponse(Call<Game> call, Response<Game> response) {
                 if (response.isSuccessful()) {
-                    showGameInfo(response.body());
+                    setThisUser(response.body());
                 } else {
                     Toast.makeText(GameProfile.this.getBaseContext(), "Error reading game", Toast.LENGTH_LONG).show();
                 }
@@ -85,14 +147,42 @@ public class GameProfile extends AppCompatActivity {
 
     }
 
-    public void showGameInfo(Game g){
+    public void setThisUser(Game game){
+        Call<User> call = mTodoService.getMe();
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    showGameInfo(game, response.body());
+
+                } else {
+                    Toast.makeText(GameProfile.this.getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+            }
+        });
+    }
+
+    public void showGameInfo(Game g, User user){
         TextView gameName;
         TextView gameDesc;
         TextView gameCate;
+        Switch gameBook;
 
         gameName = findViewById(R.id.game_name);
         gameDesc = findViewById(R.id.game_description);
         gameCate = findViewById(R.id.game_categories);
+        gameBook = findViewById(R.id.bookmarkSwitch);
+
+        for(Game i : user.games){
+            if(i.id == g.id){
+                gameBook.setChecked(true);
+                break;
+            }
+        }
 
         gameName.setText(g.name);
         gameDesc.setText(g.description);

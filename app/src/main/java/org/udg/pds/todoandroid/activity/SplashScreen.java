@@ -43,10 +43,8 @@ public class SplashScreen extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     SplashScreen.this.startActivity(new Intent(SplashScreen.this, NavigationActivity.class));
-                    SplashScreen.this.finish();
                 } else {
                     SplashScreen.this.startActivity(new Intent(SplashScreen.this, Login.class));
-                    SplashScreen.this.finish();
                 }
             }
 
