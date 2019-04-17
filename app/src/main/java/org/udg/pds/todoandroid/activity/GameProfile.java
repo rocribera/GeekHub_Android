@@ -55,36 +55,23 @@ public class GameProfile extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Long gameId = getIntent().getExtras().getLong("gameId");
                 if(isChecked){
-                    Call<Game> call = mTodoService.getGame(gameId.toString());
+                    Call<String> postCall = mTodoService.bookmarkGame(gameId.toString());
 
-                    call.enqueue(new Callback<Game>() {
+                    postCall.enqueue(new Callback<String>() {
                         @Override
-                        public void onResponse(Call<Game> call, Response<Game> response) {
-                            if (response.isSuccessful()) {
-                                Call<String> postCall = mTodoService.bookmarkGame(response.body());
+                        public void onResponse(Call<String> postCall, Response<String> response) {
+                            if (response.isSuccessful()){
 
-                                postCall.enqueue(new Callback<String>() {
-                                    @Override
-                                    public void onResponse(Call<String> postCall, Response<String> response) {
-                                        if (response.isSuccessful()){
-
-                                        }
-                                        else{
-                                            Toast.makeText(GameProfile.this.getBaseContext(), "Error posting bookmarked game", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<String> postCall, Throwable t) {
-
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(GameProfile.this.getBaseContext(), "Error reading game", Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Toast.makeText(GameProfile.this.getBaseContext(), "Error posting bookmarked game", Toast.LENGTH_LONG).show();
                             }
                         }
+
                         @Override
-                        public void onFailure(Call<Game> call, Throwable t) {}
+                        public void onFailure(Call<String> postCall, Throwable t) {
+
+                        }
                     });
                 }
                 else{
