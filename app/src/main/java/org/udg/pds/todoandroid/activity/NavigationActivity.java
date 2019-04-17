@@ -36,8 +36,10 @@ public class NavigationActivity extends AppCompatActivity {
                     return true;
                 });
 
+        bottomNavigationView.setSelectedItemId(R.id.action_games);
         switchView(bottomNavigationView.getSelectedItemId());
     }
+
 
     private void switchView(int itemId) {
         final FrameLayout content = findViewById(R.id.main_content);
