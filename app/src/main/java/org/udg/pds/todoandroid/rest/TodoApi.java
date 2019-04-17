@@ -55,8 +55,8 @@ public interface TodoApi {
   @GET("/users/me")
   Call<User> getMe();
 
-  @POST("/users/me/games")
-  Call<String> bookmarkGame(@Body Game game);
+  @POST("/users/me/games/{id}")
+  Call<String> bookmarkGame(@Path("id") String id);
 
   @DELETE("/users/me/games/{id}")
   Call<String> deleteBookmark(@Path("id") String id);
