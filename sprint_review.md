@@ -1,6 +1,6 @@
 # Sprint 1
 ## Oriol Masferrer Tort
-* [L'usuari pot buscar un joc SERVER]https://wuilder.com/jira/browse/PDS19_3C-8) 55
+* [L'usuari pot buscar un joc SERVER](https://wuilder.com/jira/browse/PDS19_3C-8) 55
 * [L'usuari pot buscar un joc ANDROID](https://wuilder.com/jira/browse/PDS19_3C-8) 34
 
 ## Roc Ribera Blasi
