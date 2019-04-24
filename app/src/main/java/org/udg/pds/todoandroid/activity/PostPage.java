@@ -2,6 +2,7 @@ package org.udg.pds.todoandroid.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -103,7 +104,6 @@ public class PostPage extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
-
             }
         });
     }
@@ -137,6 +137,7 @@ public class PostPage extends AppCompatActivity {
         Switch followSwitch;
 
         Button deleteButton;
+        Button followersButton;
 
         postTitle = findViewById(R.id.post_title_text);
         postDesc = findViewById(R.id.Description);
@@ -147,8 +148,20 @@ public class PostPage extends AppCompatActivity {
         followSwitch = findViewById(R.id.follow_switch);
 
         deleteButton = findViewById(R.id.delete_button);
+        followersButton = findViewById(R.id.chatButton);
 
-        System.out.println("TITLE: " + post.title);
+        if(user.id == post.userId){
+            deleteButton.setVisibility(View.VISIBLE);
+            activeSwitch.setVisibility(View.VISIBLE);
+            followSwitch.setVisibility(View.INVISIBLE);
+            followersButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            deleteButton.setVisibility(View.INVISIBLE);
+            followersButton.setVisibility(View.INVISIBLE);
+            activeSwitch.setVisibility(View.INVISIBLE);
+            followSwitch.setVisibility(View.VISIBLE);
+        }
 
         if(post.active) activeSwitch.setChecked(true);
 
@@ -159,7 +172,7 @@ public class PostPage extends AppCompatActivity {
             }
         }
 
-        postTitle.setText("loijdgoahdoriy");
+        postTitle.setText(post.title);
         postDesc.setText(post.description);
         postUser.setText(post.username);
         postFollowers.setText(post.followers.size() + " followers");
