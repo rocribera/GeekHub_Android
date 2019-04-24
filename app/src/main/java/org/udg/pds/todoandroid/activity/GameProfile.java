@@ -24,7 +24,6 @@ import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.Post;
 import org.udg.pds.todoandroid.entity.User;
-import org.udg.pds.todoandroid.fragment.GamesDirectory;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 
@@ -228,12 +227,12 @@ public class GameProfile extends AppCompatActivity {
             super(itemView);
             view = itemView;
             description = (TextView) itemView.findViewById(R.id.post_description);
-            title = (TextView) itemView.findViewById(R.id.post_title);
+            title = (TextView) itemView.findViewById(R.id.post_title_text);
             username = (TextView) itemView.findViewById(R.id.post_username);
         }
     }
 
-    static class TRAdapter extends RecyclerView.Adapter<GameProfile.PostViewHolder> {
+    class TRAdapter extends RecyclerView.Adapter<GameProfile.PostViewHolder> {
 
         List<Post> list = new ArrayList<>();
         Context context;
@@ -259,10 +258,9 @@ public class GameProfile extends AppCompatActivity {
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int duration = Toast.LENGTH_LONG;
-
-                    Toast toast = Toast.makeText(context, String.format("Hey, I'm item %1d", position), duration);
-                    toast.show();
+                    Intent i = new Intent(GameProfile.this, PostPage.class);
+                    i.putExtra("postId",list.get(position).id);
+                    context.startActivity(i);
                 }
             });
         }
