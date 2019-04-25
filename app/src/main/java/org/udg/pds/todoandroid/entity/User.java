@@ -10,5 +10,5 @@ public class User {
   public String description;
   public List<Game> games;
   public List<Post> followedPosts;
-  public String valoration;
+  public float valoration;
 }
