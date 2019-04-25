@@ -153,17 +153,36 @@ public class PostPage extends AppCompatActivity {
         if(user.id == post.userId){
             deleteButton.setVisibility(View.VISIBLE);
             activeSwitch.setVisibility(View.VISIBLE);
-            followSwitch.setVisibility(View.INVISIBLE);
+            followSwitch.setVisibility(View.GONE);
             followersButton.setVisibility(View.VISIBLE);
         }
         else{
-            deleteButton.setVisibility(View.INVISIBLE);
-            followersButton.setVisibility(View.INVISIBLE);
-            activeSwitch.setVisibility(View.INVISIBLE);
+            deleteButton.setVisibility(View.GONE);
+            followersButton.setVisibility(View.GONE);
+            activeSwitch.setVisibility(View.GONE);
             followSwitch.setVisibility(View.VISIBLE);
         }
 
         if(post.active) activeSwitch.setChecked(true);
+
+        /*activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Call<String> postCall = mTodoService.toggleActivePost(((Long)post.id).toString());
+
+                postCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> postCall, Response<String> response) {
+                        if (response.isSuccessful()) {
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> postCall, Throwable t) {
+                    }
+                });
+                }
+        });*/
 
         for(User i : post.followers){
             if(i.id == user.id){
