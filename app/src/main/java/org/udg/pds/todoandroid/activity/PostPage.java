@@ -184,8 +184,8 @@ public class PostPage extends AppCompatActivity {
                 }
         });
 
-        for(User i : post.followers){
-            if(i.id == user.id){
+        for(Post i : user.followedPosts){
+            if(i.id == post.id){
                 followSwitch.setChecked(true);
                 break;
             }
