@@ -165,7 +165,7 @@ public class PostPage extends AppCompatActivity {
 
         if(post.active) activeSwitch.setChecked(true);
 
-        /*activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Call<String> postCall = mTodoService.toggleActivePost(((Long)post.id).toString());
@@ -182,7 +182,7 @@ public class PostPage extends AppCompatActivity {
                     }
                 });
                 }
-        });*/
+        });
 
         for(User i : post.followers){
             if(i.id == user.id){
