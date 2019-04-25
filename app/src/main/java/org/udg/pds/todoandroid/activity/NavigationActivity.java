@@ -11,6 +11,7 @@ import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.fragment.FavoritesFragment;
 import org.udg.pds.todoandroid.fragment.GamesDirectory;
 import org.udg.pds.todoandroid.fragment.TaskList;
+import org.udg.pds.todoandroid.fragment.UserProfile;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
 // FragmentActivity is a base class for activities that want to use the support-based Fragment and Loader APIs.
@@ -58,11 +59,11 @@ public class NavigationActivity extends AppCompatActivity {
                         .replace(R.id.main_content, new GamesDirectory())
                         .commit();
                 break;
-            case R.id.action_tasks:
+            case R.id.action_profile:
                 content.removeAllViews();
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_content, new TaskList())
+                        .replace(R.id.main_content, new UserProfile())
                         .commit();
                 break;
         }
