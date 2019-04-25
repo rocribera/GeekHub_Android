@@ -9,5 +9,6 @@ public class User {
   public String image;
   public String description;
   public List<Game> games;
+  public List<Post> followedPosts;
   public String valoration;
 }
