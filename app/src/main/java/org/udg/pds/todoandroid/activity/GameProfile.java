@@ -260,6 +260,7 @@ public class GameProfile extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent i = new Intent(GameProfile.this, PostPage.class);
                     i.putExtra("postId",list.get(position).id);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(i);
                 }
             });

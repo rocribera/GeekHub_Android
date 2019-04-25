@@ -69,5 +69,11 @@ public interface TodoApi {
 
   @GET("/posts/{id}")
   Call<Post> getPostInfo(@Path("id") String id);
+
+  @GET("/users/me/posts")
+  Call<List<Post>> getUserPosts();
+
+  @POST("users/me/posts/{id}")
+  Call<String> toggleActivePost(@Path("id") String id);
 }
 

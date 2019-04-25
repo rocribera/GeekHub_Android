@@ -165,6 +165,25 @@ public class PostPage extends AppCompatActivity {
 
         if(post.active) activeSwitch.setChecked(true);
 
+        activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Call<String> postCall = mTodoService.toggleActivePost(((Long)post.id).toString());
+
+                postCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> postCall, Response<String> response) {
+                        if (response.isSuccessful()) {
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> postCall, Throwable t) {
+                    }
+                });
+                }
+        });
+
         for(Post i : user.followedPosts){
             if(i.id == post.id){
                 followSwitch.setChecked(true);
