@@ -31,5 +31,7 @@
     <string name="text_games">Games</string>
     <string name="add_post">Add Post</string>
     <string name="ap_title">Title:</string>
+    <string name="postDescription">Post Description</string>
+    <string name="postFollowers"># Followers</string>
 
 </resources>

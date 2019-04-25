@@ -60,5 +60,14 @@ public interface TodoApi {
 
   @DELETE("/users/me/games/{id}")
   Call<String> deleteBookmark(@Path("id") String id);
+
+  @POST("/users/me/follows/{id}")
+  Call<String> followPost(@Path("id") String id);
+
+  @DELETE("/users/me/follows/{id}")
+  Call<String> unfollowPost(@Path("id") String id);
+
+  @GET("/posts/{id}")
+  Call<Post> getPostInfo(@Path("id") String id);
 }
 
