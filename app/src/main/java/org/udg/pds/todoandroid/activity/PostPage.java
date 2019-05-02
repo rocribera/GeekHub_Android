@@ -1,10 +1,14 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,11 +85,6 @@ public class PostPage extends AppCompatActivity {
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
 
         getPostInfo();
-
-        Button deleteButton = findViewById(R.id.delete_button);
-        deleteButton.setOnClickListener(view -> {
-            //Estàs segur d'eliminar el post??
-        });
     }
 
     public void getPostInfo(){
@@ -196,6 +195,46 @@ public class PostPage extends AppCompatActivity {
         postUser.setText(post.username);
         postFollowers.setText(post.followers.size() + " followers");
 
-        //FALTA BOTO D'ESBORRAR POST
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupDelete = layoutInflater.inflate(R.layout.delete_confirmation, null);
+        PopupWindow popupWindow = new PopupWindow(this);
+        popupWindow.setContentView(popupDelete);
+
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.showAtLocation(popupDelete, Gravity.CENTER,0,0);
+                Button deleteConfirm = popupDelete.findViewById(R.id.delete_confirm);
+                deleteConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Call<String> call = mTodoService.deletePost(post.id.toString());
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if(response.isSuccessful()){
+                                } else {
+                                    Toast.makeText(PostPage.this.getBaseContext(), "Error deleting post", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                            }
+                        });
+                        popupWindow.dismiss();
+                        finish();
+                    }
+                });
+                Button deleteCancel = popupDelete.findViewById(R.id.delete_cancel);
+                deleteCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+            }
+        });
     }
 }
