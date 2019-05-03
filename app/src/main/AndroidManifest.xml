@@ -3,6 +3,7 @@
     package="org.udg.pds.todoandroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-sdk android:minSdkVersion="8" />
 
     <application
         android:name=".TodoApp"
@@ -12,14 +13,20 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.AddPost"></activity>
-        <activity android:name=".activity.GameProfile"/>
+
+        <service android:name="MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".activity.AddPost" />
+        <activity android:name=".activity.GameProfile" />
         <activity android:name=".activity.Register" />
         <activity android:name=".activity.PostPage" />
         <activity
             android:name=".activity.Login"
             android:label="@string/app_name" />
-
         <activity
             android:name=".activity.AddTask"
             android:label="@string/app_name" />
@@ -29,9 +36,9 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.SplashScreen"
-            android:noHistory="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash_screen"
+            android:noHistory="true"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,8 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.NavigationActivity" >
-        </activity>
+        <activity android:name=".activity.NavigationActivity"></activity>
     </application>
 
 </manifest>
