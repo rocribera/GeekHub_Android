@@ -1,11 +1,14 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
@@ -19,10 +22,15 @@ import retrofit2.Response;
 public class AddPost extends AppCompatActivity implements Callback<String> {
 
     TodoApi mTodoService;
+    Post newPost;
 
     @Override
     public void onResponse(Call<String> call, Response<String> response) {
         if (response.isSuccessful()) {
+            Intent intent = new Intent();
+            Gson gson = new Gson();
+            String myJson = gson.toJson(newPost);
+            intent.putExtra("myjson", myJson);
             finish();
         } else {
             Toast.makeText(AddPost.this.getBaseContext(), "Error adding post", Toast.LENGTH_LONG).show();

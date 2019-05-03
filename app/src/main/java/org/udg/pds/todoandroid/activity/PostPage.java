@@ -1,6 +1,8 @@
 package org.udg.pds.todoandroid.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -18,6 +20,7 @@ import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Post;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
+import org.udg.pds.todoandroid.util.Global;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -214,6 +217,11 @@ public class PostPage extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
                                 if(response.isSuccessful()){
+                                    popupWindow.dismiss();
+                                    Intent data = new Intent();
+                                    data.setData(Uri.parse(post.id.toString()));
+                                    setResult(Global.RQ_DELETE_POST, data);
+                                    finish();
                                 } else {
                                     Toast.makeText(PostPage.this.getBaseContext(), "Error deleting post", Toast.LENGTH_LONG).show();
                                 }
@@ -223,8 +231,7 @@ public class PostPage extends AppCompatActivity {
                             public void onFailure(Call<String> call, Throwable t) {
                             }
                         });
-                        popupWindow.dismiss();
-                        finish();
+
                     }
                 });
                 Button deleteCancel = popupDelete.findViewById(R.id.delete_cancel);
