@@ -29,8 +29,7 @@ public class AddPost extends AppCompatActivity implements Callback<String> {
         if (response.isSuccessful()) {
             Intent intent = new Intent();
             Gson gson = new Gson();
-            String myJson = gson.toJson(newPost);
-            intent.putExtra("myjson", myJson);
+            intent.putExtra("post", gson.toJson(newPost));
             finish();
         } else {
             Toast.makeText(AddPost.this.getBaseContext(), "Error adding post", Toast.LENGTH_LONG).show();
