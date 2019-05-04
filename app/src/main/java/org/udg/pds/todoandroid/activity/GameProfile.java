@@ -188,7 +188,7 @@ public class GameProfile extends AppCompatActivity {
     public void showPostList(List<Post> tl) {
         mAdapter.clear();
         for (Post t : tl) {
-            mAdapter.add(t);
+            if(t.active) mAdapter.add(t);
         }
     }
 
