@@ -75,5 +75,8 @@ public interface TodoApi {
 
   @POST("users/me/posts/{id}")
   Call<String> toggleActivePost(@Path("id") String id);
+
+  @DELETE("/posts/{id}")
+  Call<String> deletePost(@Path("id") String id);
 }
 
