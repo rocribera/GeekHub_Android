@@ -1,10 +1,15 @@
 package org.udg.pds.todoandroid.services;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.udg.pds.todoandroid.Constants;
 import org.udg.pds.todoandroid.MyNotificationManager;
 import org.udg.pds.todoandroid.TodoApp;
 
@@ -42,6 +47,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body = remoteMessage.getNotification().getBody();
 
         //then here we can use the title and body to build a notification
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+            mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+
         MyNotificationManager.getInstance(this).displayNotification(title, body);
     }
 }
