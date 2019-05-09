@@ -78,5 +78,8 @@ public interface TodoApi {
 
   @DELETE("/posts/{id}")
   Call<String> deletePost(@Path("id") String id);
+
+  @GET("/users/me/postsFollowing")
+  Call<List<Post>> getUserPostsSubscribed();
 }
 
