@@ -35,16 +35,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        String title = "Title", body = "Body";
+
+        Log.d(TAG, "Mesage receiverd!!!!!");
+
         //if the message contains data payload
         //It is a map of custom keyvalues
         //we can read it easily
         if(remoteMessage.getData().size() > 0){
-            //handle the data message here
+            title = remoteMessage.getData().get("title");
+            body = remoteMessage.getData().get("body");
         }
 
-        //getting the title and the body
-        String title = remoteMessage.getNotification().getTitle();
-        String body = remoteMessage.getNotification().getBody();
 
         //then here we can use the title and body to build a notification
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
