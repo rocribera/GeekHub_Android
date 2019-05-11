@@ -81,7 +81,7 @@
         android:layout_width="239dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:isIndicator="true"
         android:numStars="5"
@@ -90,29 +90,58 @@
         app:layout_constraintStart_toStartOf="@+id/guideline10"
         app:layout_constraintTop_toBottomOf="@+id/user_image" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/subscribed_games"
+    <FrameLayout
+        android:id="@+id/userProfileContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline16"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/userProfileOwnPosts">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="113dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="100dp"
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/userProfileOwnPosts"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="sans-serif"
-        android:text="Subscribed to"
-        android:textAllCaps="false"
+        android:text="Posts"
+        android:textColor="@android:color/secondary_text_dark"
         android:textStyle="bold|italic"
+        app:layout_constraintEnd_toStartOf="@+id/userProfilePosts"
+        app:layout_constraintStart_toEndOf="@+id/userProfileGames"
+        app:layout_constraintTop_toBottomOf="@+id/user_rating" />
+
+    <Button
+        android:id="@+id/userProfilePosts"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Posts \n subscribed"
+        android:textColor="@android:color/secondary_text_dark"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toStartOf="@+id/guideline16"
+        app:layout_constraintTop_toTopOf="@+id/userProfileOwnPosts" />
+
+    <Button
+        android:id="@+id/userProfileGames"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Games \n subscribed"
+        android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
-        app:layout_constraintTop_toBottomOf="@+id/user_image" />
+        app:layout_constraintTop_toTopOf="@+id/userProfileOwnPosts" />
 
 </android.support.constraint.ConstraintLayout>

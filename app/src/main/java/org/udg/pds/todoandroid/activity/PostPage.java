@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +21,8 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Post;
 import org.udg.pds.todoandroid.entity.User;
+import org.udg.pds.todoandroid.fragment.GamesDirectory;
+import org.udg.pds.todoandroid.fragment.UserProfile;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 
@@ -132,7 +136,6 @@ public class PostPage extends AppCompatActivity {
     public void showPostInfo(Post post, User user){
         TextView postTitle;
         TextView postDesc;
-        TextView postUser;
         TextView postFollowers;
 
         Switch activeSwitch;
@@ -140,10 +143,11 @@ public class PostPage extends AppCompatActivity {
 
         Button deleteButton;
         Button followersButton;
+        Button creatorProfile;
 
         postTitle = findViewById(R.id.post_title_text);
         postDesc = findViewById(R.id.Description);
-        postUser = findViewById(R.id.author);
+        creatorProfile = findViewById(R.id.author);
         postFollowers = findViewById(R.id.followers_text);
 
         activeSwitch = findViewById(R.id.active_switch);
@@ -195,7 +199,7 @@ public class PostPage extends AppCompatActivity {
 
         postTitle.setText(post.title);
         postDesc.setText(post.description);
-        postUser.setText(post.username);
+        creatorProfile.setText(post.username);
         postFollowers.setText(post.followers.size() + " followers");
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -203,6 +207,22 @@ public class PostPage extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupDelete);
 
+        creatorProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (user.id == post.userId)
+                {
+
+                }
+                else
+                {
+                    Intent i = new Intent(getApplicationContext(),OtherUserProfile.class);
+                    i.putExtra("userId",post.userId);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override

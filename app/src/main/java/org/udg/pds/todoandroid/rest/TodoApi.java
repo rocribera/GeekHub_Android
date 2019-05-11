@@ -52,6 +52,15 @@ public interface TodoApi {
   @GET("/games")
   Call<List<Game>> getGames();
 
+  @GET("/posts/{id}")
+  Call<Post> getPostInfo(@Path("id") String id);
+
+  @POST("users/me/posts/{id}")
+  Call<String> toggleActivePost(@Path("id") String id);
+
+  @DELETE("/posts/{id}")
+  Call<String> deletePost(@Path("id") String id);
+
   @GET("/users/me")
   Call<User> getMe();
 
@@ -67,19 +76,20 @@ public interface TodoApi {
   @DELETE("/users/me/follows/{id}")
   Call<String> unfollowPost(@Path("id") String id);
 
-  @GET("/posts/{id}")
-  Call<Post> getPostInfo(@Path("id") String id);
-
   @GET("/users/me/posts")
   Call<List<Post>> getUserPosts();
 
-  @POST("users/me/posts/{id}")
-  Call<String> toggleActivePost(@Path("id") String id);
-
-  @DELETE("/posts/{id}")
-  Call<String> deletePost(@Path("id") String id);
-
   @GET("/users/me/postsFollowing")
   Call<List<Post>> getUserPostsSubscribed();
+
+  @GET("/users/{id}")
+  Call<User> getUser(@Path("id") String id);
+
+  @GET("/users/{id}/posts")
+  Call<User> getOtherUserPosts(@Path("id") String id);
+
+  @GET("/users/{id}/postsFollowing")
+  Call<List<Post>> getOtherUserPostsSubscribed(@Path("id") String id);
+
 }
 

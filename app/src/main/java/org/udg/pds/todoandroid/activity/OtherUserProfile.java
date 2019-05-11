@@ -1,29 +1,25 @@
 package org.udg.pds.todoandroid.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
-import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.User;
+import org.udg.pds.todoandroid.fragment.UserProfileGames;
+import org.udg.pds.todoandroid.fragment.UserProfilePosts;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,27 +28,76 @@ import retrofit2.Response;
 public class OtherUserProfile extends AppCompatActivity {
 
     TodoApi mTodoService;
-    View rootView;
-    RecyclerView mRecyclerView;
-    private TRAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.other_user_profile);
+
+        final FrameLayout content = this.findViewById(R.id.userProfileContent);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.userProfileContent, new UserProfileGames())
+                .commit();
+        Button buttonGames = (Button)this.findViewById(R.id.userProfileGames);
+        Button buttonOwnPosts = (Button)this.findViewById(R.id.userProfileOwnPosts);
+        Button buttonPostsSubscribed = (Button)this.findViewById(R.id.userProfilePosts);
+        buttonGames.setTextColor(Color.BLACK);
+        buttonOwnPosts.setTextColor(Color.LTGRAY);
+        buttonPostsSubscribed.setTextColor(Color.LTGRAY);
+        buttonGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonGames.setTextColor(Color.BLACK);
+                buttonOwnPosts.setTextColor(Color.LTGRAY);
+                buttonPostsSubscribed.setTextColor(Color.LTGRAY);
+                content.removeAllViews();
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.userProfileContent, new UserProfileGames())
+                        .commit();
+            }
+        });
+        buttonOwnPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonGames.setTextColor(Color.LTGRAY);
+                buttonOwnPosts.setTextColor(Color.BLACK);
+                buttonPostsSubscribed.setTextColor(Color.LTGRAY);
+                content.removeAllViews();
+                UserProfilePosts fragment = new UserProfilePosts();
+                Bundle bundle = new Bundle();
+                bundle.putInt("type",1);
+                fragment.setArguments(bundle);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.userProfileContent, fragment)
+                        .commit();
+            }
+        });
+        buttonPostsSubscribed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonGames.setTextColor(Color.LTGRAY);
+                buttonOwnPosts.setTextColor(Color.LTGRAY);
+                buttonPostsSubscribed.setTextColor(Color.BLACK);
+                content.removeAllViews();
+                UserProfilePosts fragment = new UserProfilePosts();
+                Bundle bundle = new Bundle();
+                bundle.putInt("type",2);
+                fragment.setArguments(bundle);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.userProfileContent, fragment)
+                        .commit();
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
-
-        getUserInfo();
-
-        mRecyclerView = findViewById(R.id.subscribed_games);
-        mAdapter = new OtherUserProfile.TRAdapter(this.getApplication());
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -62,15 +107,16 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     public void getUserInfo(){
-        Call<User> call = mTodoService.getMe();
+        Long userId = getIntent().getExtras().getLong("userId");
+        Call<User> call = mTodoService.getUser(userId.toString());
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
                     showProfileUserInfo(response.body());
-                    OtherUserProfile.this.showGameList(response.body().games);
+                    //UserProfile.this.showGameList(response.body().games);
                 } else {
-                    Toast.makeText(OtherUserProfile.this.getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -86,107 +132,15 @@ public class OtherUserProfile extends AppCompatActivity {
         TextView userDescription;
         RatingBar userRating;
 
-        userUsername = rootView.findViewById(R.id.user_username);
-        userDescription = rootView.findViewById(R.id.user_description);
-        userRating = rootView.findViewById(R.id.user_rating);
+        userUsername = this.findViewById(R.id.user_username);
+        userDescription = this.findViewById(R.id.user_description);
+        userRating = this.findViewById(R.id.user_rating);
 
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        new OtherUserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
+        new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
     }
-
-    public void showGameList(List<Game> tl) {
-        mAdapter.clear();
-        for (Game t : tl) {
-            mAdapter.add(t);
-        }
-    }
-
-    static class GameViewHolder extends RecyclerView.ViewHolder {
-        TextView categories;
-        TextView title;
-        ImageView logo;
-        View view;
-
-        GameViewHolder(View itemView) {
-            super(itemView);
-            view = itemView;
-            categories = (TextView) itemView.findViewById(R.id.ListGameCategories);
-            title = (TextView) itemView.findViewById(R.id.ListGameTitle);
-            logo =  (ImageView) itemView.findViewById(R.id.listGameLogo);
-        }
-    }
-
-    class TRAdapter extends RecyclerView.Adapter<OtherUserProfile.GameViewHolder> {
-
-        List<Game> list = new ArrayList<>();
-        Context context;
-
-        public TRAdapter(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public OtherUserProfile.GameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_layout, parent, false);
-            OtherUserProfile.GameViewHolder holder = new OtherUserProfile.GameViewHolder(v);
-
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(OtherUserProfile.GameViewHolder holder, final int position) {
-            holder.categories.setText(list.get(position).categories.toString());
-            holder.title.setText(list.get(position).name);
-            new OtherUserProfile.DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).image);
-
-            holder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(OtherUserProfile.this, GameProfile.class);
-                    i.putExtra("gameId",list.get(position).id);
-                    startActivity(i);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-        // Insert a new item to the RecyclerView
-        public void insert(int position, Game data) {
-            list.add(position, data);
-            notifyItemInserted(position);
-        }
-
-        // Remove a RecyclerView item containing the Data object
-        public void remove(Game data) {
-            int position = list.indexOf(data);
-            list.remove(position);
-            notifyItemRemoved(position);
-        }
-
-        public void add(Game t) {
-            list.add(t);
-            this.notifyItemInserted(list.size() - 1);
-        }
-
-        public void clear() {
-            int size = list.size();
-            list.clear();
-            this.notifyItemRangeRemoved(0, size);
-        }
-    }
-
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
         ImageView imageView;
