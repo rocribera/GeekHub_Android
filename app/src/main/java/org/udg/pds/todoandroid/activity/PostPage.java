@@ -212,14 +212,15 @@ public class PostPage extends AppCompatActivity {
             public void onClick(View view) {
                 if (user.id == post.userId)
                 {
-
+                    Intent i = new Intent(getApplicationContext(),NavigationActivity.class);
+                    i.putExtra("goToProfile", true);
+                    startActivity(i);
                 }
                 else
                 {
                     Intent i = new Intent(getApplicationContext(),OtherUserProfile.class);
                     i.putExtra("userId",post.userId);
                     startActivity(i);
-                    finish();
                 }
             }
         });

@@ -37,7 +37,11 @@ public class NavigationActivity extends AppCompatActivity {
                     return true;
                 });
 
-        bottomNavigationView.setSelectedItemId(R.id.action_games);
+        if (getIntent().hasExtra("goToProfile")) {
+            bottomNavigationView.setSelectedItemId(R.id.action_profile);
+        } else {
+            bottomNavigationView.setSelectedItemId(R.id.action_games);
+        }
         switchView(bottomNavigationView.getSelectedItemId());
     }
 
