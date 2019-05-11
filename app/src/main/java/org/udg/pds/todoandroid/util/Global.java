@@ -38,5 +38,4 @@ public class Global {
     public static final String BASE_URL_PORTFORWARDING = "http://private-8af88-geekhub.apiary-mock.com";
     public static final String BASE_URL_GENYMOTION = "http://10.0.3.2:8080";
 
-
 }
