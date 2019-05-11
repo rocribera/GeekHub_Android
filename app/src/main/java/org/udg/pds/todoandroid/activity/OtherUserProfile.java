@@ -160,14 +160,15 @@ public class OtherUserProfile extends AppCompatActivity {
         View popupRating = layoutInflater.inflate(R.layout.rating_valoration, null);
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupRating);
+        popupWindow.setFocusable(true);
 
         userRating.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     popupWindow.showAtLocation(popupRating, Gravity.CENTER,0,0);
-                    Button ratingConfirm = popupRating.findViewById(R.id.rating_confirm);
-                    ratingConfirm.setOnClickListener(new View.OnClickListener() {
+                    Button ratingSend = popupRating.findViewById(R.id.rating_send);
+                    ratingSend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RatingBar rb = popupRating.findViewById(R.id.rating_valoration);
@@ -189,13 +190,6 @@ public class OtherUserProfile extends AppCompatActivity {
                                 }
                             });
 
-                        }
-                    });
-                    Button ratingCancel = popupRating.findViewById(R.id.rating_cancel);
-                    ratingCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            popupWindow.dismiss();
                         }
                     });
                 }
