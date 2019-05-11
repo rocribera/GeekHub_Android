@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         String title = "Title", body = "Body";
-        Long gameID = Long.valueOf(0);
+        Long postID = Long.valueOf(0), gameID = Long.valueOf(0);
 
         Log.d(TAG, "Mesage receiverd!!!!!");
 
@@ -46,6 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getData().size() > 0){
             title = remoteMessage.getData().get("title");
             body = remoteMessage.getData().get("body");
+            postID = Long.parseLong(remoteMessage.getData().get("postID"));
             gameID = Long.parseLong(remoteMessage.getData().get("gameID"));
         }
 
@@ -65,6 +66,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
-        MyNotificationManager.getInstance(this).displayNotification(title, body, gameID);
+        MyNotificationManager.getInstance(this).displayNotification(title, body, postID, gameID);
     }
 }
