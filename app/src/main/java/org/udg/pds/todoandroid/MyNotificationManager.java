@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.udg.pds.todoandroid.activity.GameProfile;
+import org.udg.pds.todoandroid.activity.PostPage;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -28,7 +29,7 @@ public class MyNotificationManager {
         return mInstance;
     }
 
-    public void displayNotification(String title, String body, Long gameID) {
+    public void displayNotification(String title, String body, Long postID, Long gameID) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
@@ -43,11 +44,15 @@ public class MyNotificationManager {
          *  But for your project you can customize it as you want
          * */
 
-        Intent resultIntent = new Intent(mCtx, GameProfile.class);
-        resultIntent.putExtra("gameId",gameID);
+        Intent postIntent = new Intent(mCtx, PostPage.class);
+        postIntent.putExtra("postId", postID);
+
+        Intent gameIntent = new Intent(mCtx, GameProfile.class);
+        gameIntent.putExtra("gameId", gameID);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        stackBuilder.addNextIntentWithParentStack(gameIntent);
+        stackBuilder.addNextIntent(postIntent);
 
 
         /*
