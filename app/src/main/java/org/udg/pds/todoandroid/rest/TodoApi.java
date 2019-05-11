@@ -76,10 +76,15 @@ public interface TodoApi {
   @POST("users/me/posts/{id}")
   Call<String> toggleActivePost(@Path("id") String id);
 
+
+  @POST("users/me/token")
+  Call<String> sendToken(@Body String token);
+
   @DELETE("/posts/{id}")
   Call<String> deletePost(@Path("id") String id);
 
   @GET("/users/me/postsFollowing")
   Call<List<Post>> getUserPostsSubscribed();
+
 }
 
