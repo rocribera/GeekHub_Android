@@ -77,6 +77,6 @@ public interface TodoApi {
   Call<String> toggleActivePost(@Path("id") String id);
 
   @POST("users/me/token")
-  Call<String> sendToken(@Body String string);
+  Call<String> sendToken(@Body String token);
 }
 

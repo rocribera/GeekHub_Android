@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.udg.pds.todoandroid.activity.GameProfile;
 
@@ -26,7 +27,7 @@ public class MyNotificationManager {
         return mInstance;
     }
 
-    public void displayNotification(String title, String body) {
+    public void displayNotification(String title, String body, Long gameID) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
@@ -42,6 +43,7 @@ public class MyNotificationManager {
          * */
 
         Intent resultIntent = new Intent(mCtx, GameProfile.class);
+        resultIntent.putExtra("gameId",gameID);
 
         /*
          *  Now we will create a pending intent
