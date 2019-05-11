@@ -19,6 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.Game;
@@ -152,6 +154,7 @@ public class GameProfile extends AppCompatActivity {
         });
     }
 
+
     public void showGameInfo(Game g, User user){
         TextView gameName;
         TextView gameDesc;
@@ -185,14 +188,24 @@ public class GameProfile extends AppCompatActivity {
     public void showPostList(List<Post> tl) {
         mAdapter.clear();
         for (Post t : tl) {
-            mAdapter.add(t);
+            if(t.active) mAdapter.add(t);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == Global.RQ_ADD_POST) {
-            this.updatePostList();
+            if(resultCode==Global.RQ_ADD_POST){
+                Gson gson = new Gson();
+                Post post = gson.fromJson(getIntent().getStringExtra("post"), Post.class);
+                mAdapter.add(post);
+            }
+        }
+        else if(requestCode == Global.RQ_DELETE_POST){
+            if(resultCode==Global.RQ_DELETE_POST) {
+                mAdapter.remove(Long.parseLong(data.getData().toString()));
+            }
         }
     }
 
@@ -261,7 +274,7 @@ public class GameProfile extends AppCompatActivity {
                     Intent i = new Intent(GameProfile.this, PostPage.class);
                     i.putExtra("postId",list.get(position).id);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(i);
+                    startActivityForResult(i, Global.RQ_DELETE_POST);
                 }
             });
         }
@@ -284,8 +297,11 @@ public class GameProfile extends AppCompatActivity {
         }
 
         // Remove a RecyclerView item containing the Data object
-        public void remove(Post data) {
-            int position = list.indexOf(data);
+        public void remove(Long postId) {
+            int position = 0;
+            while(list.get(position).id != postId){
+                position++;
+            }
             list.remove(position);
             notifyItemRemoved(position);
         }
