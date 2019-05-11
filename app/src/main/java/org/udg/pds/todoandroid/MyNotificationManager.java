@@ -2,6 +2,7 @@ package org.udg.pds.todoandroid;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
@@ -45,6 +46,10 @@ public class MyNotificationManager {
         Intent resultIntent = new Intent(mCtx, GameProfile.class);
         resultIntent.putExtra("gameId",gameID);
 
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+
+
         /*
          *  Now we will create a pending intent
          *  The method getActivity is taking 4 parameters
@@ -53,7 +58,9 @@ public class MyNotificationManager {
          *  We can detect this code in the activity that will open by this we can get
          *  Which notification opened the activity
          * */
-        PendingIntent pendingIntent = PendingIntent.getActivity(mCtx, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         /*
          *  Setting the pending intent to notification builder
