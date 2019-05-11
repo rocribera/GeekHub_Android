@@ -1,15 +1,23 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +27,8 @@ import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.fragment.UserProfileGames;
 import org.udg.pds.todoandroid.fragment.UserProfilePosts;
 import org.udg.pds.todoandroid.rest.TodoApi;
+import org.udg.pds.todoandroid.util.Global;
+
 import java.io.InputStream;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,6 +102,7 @@ public class OtherUserProfile extends AppCompatActivity {
                         .commit();
             }
         });
+
     }
 
     @Override
@@ -107,13 +118,9 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     public void getUserInfo(){
-        Call<User> call;
-        if (getIntent().hasExtra("userId")) {
-            Long userId = getIntent().getExtras().getLong("userId");
-            call = mTodoService.getUser(userId.toString());
-        } else {
-            call = mTodoService.getMe();
-        }
+
+        Long userId = getIntent().getExtras().getLong("userId");
+        Call<User> call = mTodoService.getUser(userId.toString());
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -131,6 +138,7 @@ public class OtherUserProfile extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void showProfileUserInfo(User user){
 
         TextView userUsername;
@@ -145,6 +153,55 @@ public class OtherUserProfile extends AppCompatActivity {
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
         new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
+
+        // Rating popup
+
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupRating = layoutInflater.inflate(R.layout.rating_valoration, null);
+        PopupWindow popupWindow = new PopupWindow(this);
+        popupWindow.setContentView(popupRating);
+
+        userRating.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    popupWindow.showAtLocation(popupRating, Gravity.CENTER,0,0);
+                    Button ratingConfirm = popupRating.findViewById(R.id.rating_confirm);
+                    ratingConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            RatingBar rb = popupRating.findViewById(R.id.rating_valoration);
+                            Float valoration = (Float) rb.getRating();
+                            Long userId = user.id;
+                            Call<String> call = mTodoService.ratingUser(userId.toString(), valoration.toString());
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if(response.isSuccessful()){
+                                        popupWindow.dismiss();
+                                    } else {
+                                        Toast.makeText(OtherUserProfile.this.getBaseContext(), "Error rating this user", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    Toast.makeText(OtherUserProfile.this.getBaseContext(), "Failure rating this user", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    });
+                    Button ratingCancel = popupRating.findViewById(R.id.rating_cancel);
+                    ratingCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            popupWindow.dismiss();
+                        }
+                    });
+                }
+                return true;
+            }
+        });
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
