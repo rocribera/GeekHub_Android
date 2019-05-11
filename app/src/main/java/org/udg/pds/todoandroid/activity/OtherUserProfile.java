@@ -161,6 +161,8 @@ public class OtherUserProfile extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupRating);
         popupWindow.setFocusable(true);
+        TextView tv = popupRating.findViewById(R.id.rating_text);
+        tv.setText("Rank "+user.name);
 
         userRating.setOnTouchListener(new View.OnTouchListener() {
             @Override
