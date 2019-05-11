@@ -70,8 +70,13 @@ public class UserProfilePosts extends Fragment {
     }
 
     public void updateOwnPostList() {
-
-        Call<List<Post>> call = mTodoService.getUserPosts();
+        Call<List<Post>> call;
+        if (getActivity().getIntent().hasExtra("userId")) {
+            Long userId = getActivity().getIntent().getExtras().getLong("userId");
+            call = mTodoService.getUserPosts(userId.toString());
+        } else {
+            call = mTodoService.getMyPosts();
+        }
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -89,8 +94,13 @@ public class UserProfilePosts extends Fragment {
     }
 
     public void updatePostSubscribedList() {
-
-        Call<List<Post>> call = mTodoService.getUserPostsSubscribed();
+        Call<List<Post>> call;
+        if (getActivity().getIntent().hasExtra("userId")) {
+            Long userId = getActivity().getIntent().getExtras().getLong("userId");
+            call = mTodoService.getUserPostsSubscribed(userId.toString());
+        } else {
+            call = mTodoService.getMyPostsSubscribed();
+        }
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {

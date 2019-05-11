@@ -107,8 +107,13 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     public void getUserInfo(){
-        Long userId = getIntent().getExtras().getLong("userId");
-        Call<User> call = mTodoService.getUser(userId.toString());
+        Call<User> call;
+        if (getIntent().hasExtra("userId")) {
+            Long userId = getIntent().getExtras().getLong("userId");
+            call = mTodoService.getUser(userId.toString());
+        } else {
+            call = mTodoService.getMe();
+        }
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

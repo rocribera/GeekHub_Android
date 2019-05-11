@@ -74,8 +74,13 @@ public class UserProfileGames extends Fragment {
     }
 
     public void updateGamesList() {
-
-        Call<User> call = mTodoService.getMe();
+        Call<User> call;
+        if (getActivity().getIntent().hasExtra("userId")) {
+            Long userId = getActivity().getIntent().getExtras().getLong("userId");
+            call = mTodoService.getUser(userId.toString());
+        } else {
+            call = mTodoService.getMe();
+        }
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

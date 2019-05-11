@@ -76,20 +76,20 @@ public interface TodoApi {
   @DELETE("/users/me/follows/{id}")
   Call<String> unfollowPost(@Path("id") String id);
 
-  @GET("/users/me/posts")
-  Call<List<Post>> getUserPosts();
-
-  @GET("/users/me/postsFollowing")
-  Call<List<Post>> getUserPostsSubscribed();
-
   @GET("/users/{id}")
   Call<User> getUser(@Path("id") String id);
 
+  @GET("/users/me/posts")
+  Call<List<Post>> getMyPosts();
+
+  @GET("/users/me/postsFollowing")
+  Call<List<Post>> getMyPostsSubscribed();
+
   @GET("/users/{id}/posts")
-  Call<User> getOtherUserPosts(@Path("id") String id);
+  Call<List<Post>> getUserPosts(@Path("id") String id);
 
   @GET("/users/{id}/postsFollowing")
-  Call<List<Post>> getOtherUserPostsSubscribed(@Path("id") String id);
+  Call<List<Post>> getUserPostsSubscribed(@Path("id") String id);
 
 }
 
