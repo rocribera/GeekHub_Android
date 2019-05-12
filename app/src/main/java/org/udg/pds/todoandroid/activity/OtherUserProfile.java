@@ -137,7 +137,7 @@ public class OtherUserProfile extends AppCompatActivity {
                                 public void onResponse(Call<String> call, Response<String> response) {
                                     if(response.isSuccessful()){
                                         popupWindow.dismiss();
-                                        recreate();
+                                        getUserInfo();
                                     } else {
                                         Toast.makeText(OtherUserProfile.this.getBaseContext(), "Error rating this user", Toast.LENGTH_LONG).show();
                                     }
