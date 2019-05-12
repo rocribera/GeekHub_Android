@@ -70,8 +70,13 @@ public class UserProfilePosts extends Fragment {
     }
 
     public void updateOwnPostList() {
-
-        Call<List<Post>> call = mTodoService.getUserPosts();
+        Call<List<Post>> call;
+        if (getActivity().getIntent().hasExtra("userId")) {
+            Long userId = getActivity().getIntent().getExtras().getLong("userId");
+            call = mTodoService.getUserPosts(userId.toString());
+        } else {
+            call = mTodoService.getMyPosts();
+        }
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -89,8 +94,7 @@ public class UserProfilePosts extends Fragment {
     }
 
     public void updatePostSubscribedList() {
-
-        Call<List<Post>> call = mTodoService.getUserPostsSubscribed();
+        Call<List<Post>> call = mTodoService.getMyPostsSubscribed();
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -100,7 +104,6 @@ public class UserProfilePosts extends Fragment {
                     Toast.makeText(UserProfilePosts.this.getContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
             }
@@ -150,6 +153,8 @@ public class UserProfilePosts extends Fragment {
                 public void onClick(View view) {
                     Intent i = new Intent(UserProfilePosts.this.getActivity(), PostPage.class);
                     i.putExtra("postId",list.get(position).id);
+                    if (getActivity().getIntent().hasExtra("userId"))
+                        i.putExtra("comeFromOtherUserProfile", true);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivityForResult(i, Global.RQ_DELETE_POST);
                 }

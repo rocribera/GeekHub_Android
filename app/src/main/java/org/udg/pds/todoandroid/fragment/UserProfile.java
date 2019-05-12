@@ -41,7 +41,7 @@ public class UserProfile extends Fragment {
         rootView=inflater.inflate(R.layout.content_user_profile, container, false);
 
         final FrameLayout content = rootView.findViewById(R.id.userProfileContent);
-        getFragmentManager()
+        getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.userProfileContent, new UserProfileGames())
                 .commit();
@@ -58,7 +58,7 @@ public class UserProfile extends Fragment {
                 buttonOwnPosts.setTextColor(Color.LTGRAY);
                 buttonPostsSubscribed.setTextColor(Color.LTGRAY);
                 content.removeAllViews();
-                getFragmentManager()
+                getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.userProfileContent, new UserProfileGames())
                         .commit();
@@ -75,7 +75,7 @@ public class UserProfile extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("type",1);
                 fragment.setArguments(bundle);
-                getFragmentManager()
+                getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.userProfileContent, fragment)
                         .commit();
@@ -92,7 +92,7 @@ public class UserProfile extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("type",2);
                 fragment.setArguments(bundle);
-                getFragmentManager()
+                getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.userProfileContent, fragment)
                         .commit();

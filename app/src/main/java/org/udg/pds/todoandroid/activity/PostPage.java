@@ -73,7 +73,6 @@ public class PostPage extends AppCompatActivity {
                                 Toast.makeText(PostPage.this.getBaseContext(), "Error unfollowing post", Toast.LENGTH_LONG).show();
                             }
                         }
-
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {}
                     });
@@ -103,7 +102,6 @@ public class PostPage extends AppCompatActivity {
                     Toast.makeText(PostPage.this.getBaseContext(), "Error reading post", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
             }
@@ -122,7 +120,6 @@ public class PostPage extends AppCompatActivity {
                     Toast.makeText(PostPage.this.getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<User> call, Throwable t) {
             }
@@ -132,7 +129,6 @@ public class PostPage extends AppCompatActivity {
     public void showPostInfo(Post post, User user){
         TextView postTitle;
         TextView postDesc;
-        TextView postUser;
         TextView postFollowers;
 
         Switch activeSwitch;
@@ -140,10 +136,11 @@ public class PostPage extends AppCompatActivity {
 
         Button deleteButton;
         Button followersButton;
+        Button creatorProfile;
 
         postTitle = findViewById(R.id.post_title_text);
         postDesc = findViewById(R.id.Description);
-        postUser = findViewById(R.id.author);
+        creatorProfile = findViewById(R.id.author);
         postFollowers = findViewById(R.id.followers_text);
 
         activeSwitch = findViewById(R.id.active_switch);
@@ -195,7 +192,7 @@ public class PostPage extends AppCompatActivity {
 
         postTitle.setText(post.title);
         postDesc.setText(post.description);
-        postUser.setText(post.username);
+        creatorProfile.setText(post.username);
         postFollowers.setText(post.followers.size() + " followers");
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -203,7 +200,29 @@ public class PostPage extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupDelete);
 
-
+        creatorProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (user.id == post.userId)
+                {
+                    Intent i = new Intent(getApplicationContext(),NavigationActivity.class);
+                    i.putExtra("goToProfile", true);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
+                else if (getIntent().hasExtra("comeFromOtherUserProfile") && getIntent().getExtras().getBoolean("comeFromOtherUserProfile"))
+                {
+                    getIntent().putExtra("comeFromOtherUserProfile", false);
+                    finish();
+                }
+                else
+                {
+                    Intent i = new Intent(getApplicationContext(),OtherUserProfile.class);
+                    i.putExtra("userId",post.userId);
+                    startActivity(i);
+                }
+            }
+        });
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

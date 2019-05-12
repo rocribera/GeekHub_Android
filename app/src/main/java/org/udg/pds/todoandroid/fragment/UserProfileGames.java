@@ -74,7 +74,6 @@ public class UserProfileGames extends Fragment {
     }
 
     public void updateGamesList() {
-
         Call<User> call = mTodoService.getMe();
         call.enqueue(new Callback<User>() {
             @Override
