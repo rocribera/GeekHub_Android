@@ -2,11 +2,8 @@ package org.udg.pds.todoandroid.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +24,6 @@ import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.fragment.UserProfileGames;
 import org.udg.pds.todoandroid.fragment.UserProfilePosts;
 import org.udg.pds.todoandroid.rest.TodoApi;
-import org.udg.pds.todoandroid.util.Global;
 
 import java.io.InputStream;
 import retrofit2.Call;
