@@ -17,9 +17,9 @@ import org.udg.pds.todoandroid.rest.TodoApi;
 // http://developer.android.com/reference/android/support/v4/app/FragmentActivity.html
 public class NavigationActivity extends AppCompatActivity {
 
-    private TaskList mTaskList;
-
+    final String SWITCH_STATE = "switchState";
     TodoApi mTodoService;
+    int switchReminder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,10 +36,14 @@ public class NavigationActivity extends AppCompatActivity {
                     return true;
                 });
 
-        if (getIntent().hasExtra("goToProfile")) {
+        if (getIntent().hasExtra("goToProfile") && getIntent().getExtras().getBoolean("goToProfile")) {
             bottomNavigationView.setSelectedItemId(R.id.action_profile);
-        } else {
+            getIntent().putExtra("goToProfile", false);
+        } else if (savedInstanceState==null){
             bottomNavigationView.setSelectedItemId(R.id.action_games);
+        }
+        else {
+            bottomNavigationView.setSelectedItemId(savedInstanceState.getInt(SWITCH_STATE,R.id.action_games));
         }
         switchView(bottomNavigationView.getSelectedItemId());
     }
@@ -53,6 +57,7 @@ public class NavigationActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.main_content, new FavoritesFragment())
                         .commit();
+                switchReminder=R.id.action_favorites;
                 break;
             case R.id.action_games:
                 content.removeAllViews();
@@ -60,6 +65,7 @@ public class NavigationActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.main_content, new GamesDirectory())
                         .commit();
+                switchReminder=R.id.action_games;
                 break;
             case R.id.action_profile:
                 content.removeAllViews();
@@ -67,7 +73,15 @@ public class NavigationActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.main_content, new UserProfile())
                         .commit();
+                switchReminder=R.id.action_profile;
                 break;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(SWITCH_STATE, switchReminder);
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 }
