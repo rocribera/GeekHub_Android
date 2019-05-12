@@ -94,13 +94,7 @@ public class UserProfilePosts extends Fragment {
     }
 
     public void updatePostSubscribedList() {
-        Call<List<Post>> call;
-        if (getActivity().getIntent().hasExtra("userId")) {
-            Long userId = getActivity().getIntent().getExtras().getLong("userId");
-            call = mTodoService.getUserPostsSubscribed(userId.toString());
-        } else {
-            call = mTodoService.getMyPostsSubscribed();
-        }
+        Call<List<Post>> call = mTodoService.getMyPostsSubscribed();
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -110,7 +104,6 @@ public class UserProfilePosts extends Fragment {
                     Toast.makeText(UserProfilePosts.this.getContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
             }

@@ -49,60 +49,15 @@ public class OtherUserProfile extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.userProfileContent, new UserProfileGames())
                 .commit();
-        Button buttonGames = (Button)this.findViewById(R.id.userProfileGames);
-        Button buttonOwnPosts = (Button)this.findViewById(R.id.userProfileOwnPosts);
-        Button buttonPostsSubscribed = (Button)this.findViewById(R.id.userProfilePosts);
-        buttonGames.setTextColor(Color.BLACK);
-        buttonOwnPosts.setTextColor(Color.LTGRAY);
-        buttonPostsSubscribed.setTextColor(Color.LTGRAY);
-        buttonGames.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buttonGames.setTextColor(Color.BLACK);
-                buttonOwnPosts.setTextColor(Color.LTGRAY);
-                buttonPostsSubscribed.setTextColor(Color.LTGRAY);
-                content.removeAllViews();
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.userProfileContent, new UserProfileGames())
-                        .commit();
-            }
-        });
-        buttonOwnPosts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buttonGames.setTextColor(Color.LTGRAY);
-                buttonOwnPosts.setTextColor(Color.BLACK);
-                buttonPostsSubscribed.setTextColor(Color.LTGRAY);
-                content.removeAllViews();
-                UserProfilePosts fragment = new UserProfilePosts();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type",1);
-                fragment.setArguments(bundle);
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.userProfileContent, fragment)
-                        .commit();
-            }
-        });
-        buttonPostsSubscribed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buttonGames.setTextColor(Color.LTGRAY);
-                buttonOwnPosts.setTextColor(Color.LTGRAY);
-                buttonPostsSubscribed.setTextColor(Color.BLACK);
-                content.removeAllViews();
-                UserProfilePosts fragment = new UserProfilePosts();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type",2);
-                fragment.setArguments(bundle);
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.userProfileContent, fragment)
-                        .commit();
-            }
-        });
 
+        UserProfilePosts fragment = new UserProfilePosts();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type",1);
+        fragment.setArguments(bundle);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.userProfileContent, fragment)
+                .commit();
     }
 
     @Override
@@ -224,6 +179,5 @@ public class OtherUserProfile extends AppCompatActivity {
             imageView.setImageBitmap(result);
         }
     }
-
 
 }

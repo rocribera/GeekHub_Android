@@ -42,4 +42,6 @@
     <string name="subscribed_posts">Subscribed\nPosts</string>
     <string name="subscribed_games">Subscribed\nGames</string>
 
+    <string name="created_posts_oup">Posts created:</string>
+
 </resources>

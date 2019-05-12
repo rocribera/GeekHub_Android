@@ -88,9 +88,6 @@ public interface TodoApi {
     @GET("/users/{id}/posts")
     Call<List<Post>> getUserPosts(@Path("id") String id);
 
-    @GET("/users/{id}/postsFollowing")
-    Call<List<Post>> getUserPostsSubscribed(@Path("id") String id);
-
     @POST("/users/{id}/valoration")
     Call<String> ratingUser(@Path("id") String id, @Body String value);
 
