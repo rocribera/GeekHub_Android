@@ -38,5 +38,8 @@
     <string name="user_username">User username</string>
     <string name="user_description">User description</string>
 
+    <string name="created_posts">Created\nPosts</string>
+    <string name="subscribed_posts">Subscribed\nPosts</string>
+    <string name="subscribed_games">Subscribed\nGames</string>
 
 </resources>
