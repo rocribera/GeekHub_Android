@@ -207,6 +207,7 @@ public class PostPage extends AppCompatActivity {
                 {
                     Intent i = new Intent(getApplicationContext(),NavigationActivity.class);
                     i.putExtra("goToProfile", true);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }
                 else if (getIntent().hasExtra("comeFromOtherUserProfile") && getIntent().getExtras().getBoolean("comeFromOtherUserProfile"))
@@ -222,7 +223,6 @@ public class PostPage extends AppCompatActivity {
                 }
             }
         });
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
