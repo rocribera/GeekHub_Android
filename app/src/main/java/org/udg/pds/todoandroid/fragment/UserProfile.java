@@ -41,7 +41,7 @@ public class UserProfile extends Fragment {
         rootView=inflater.inflate(R.layout.content_user_profile, container, false);
 
         final FrameLayout content = rootView.findViewById(R.id.userProfileContent);
-        getFragmentManager()
+        getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.userProfileContent, new UserProfileGames())
                 .commit();

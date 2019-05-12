@@ -1,6 +1,5 @@
 package org.udg.pds.todoandroid.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +43,6 @@ public class NavigationActivity extends AppCompatActivity {
         }
         switchView(bottomNavigationView.getSelectedItemId());
     }
-
 
     private void switchView(int itemId) {
         final FrameLayout content = findViewById(R.id.main_content);
