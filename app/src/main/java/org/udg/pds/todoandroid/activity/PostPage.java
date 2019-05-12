@@ -102,7 +102,6 @@ public class PostPage extends AppCompatActivity {
                     Toast.makeText(PostPage.this.getBaseContext(), "Error reading post", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
             }
@@ -121,7 +120,6 @@ public class PostPage extends AppCompatActivity {
                     Toast.makeText(PostPage.this.getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<User> call, Throwable t) {
             }
@@ -210,6 +208,11 @@ public class PostPage extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(),NavigationActivity.class);
                     i.putExtra("goToProfile", true);
                     startActivity(i);
+                }
+                else if (getIntent().hasExtra("comeFromOtherUserProfile") && getIntent().getExtras().getBoolean("comeFromOtherUserProfile"))
+                {
+                    getIntent().putExtra("comeFromOtherUserProfile", false);
+                    finish();
                 }
                 else
                 {

@@ -153,6 +153,7 @@ public class UserProfilePosts extends Fragment {
                 public void onClick(View view) {
                     Intent i = new Intent(UserProfilePosts.this.getActivity(), PostPage.class);
                     i.putExtra("postId",list.get(position).id);
+                    //
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivityForResult(i, Global.RQ_DELETE_POST);
                 }
