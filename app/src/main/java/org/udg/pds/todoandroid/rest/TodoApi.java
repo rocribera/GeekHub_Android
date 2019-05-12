@@ -91,8 +91,8 @@ public interface TodoApi {
     @GET("/users/{id}/postsFollowing")
     Call<List<Post>> getUserPostsSubscribed(@Path("id") String id);
 
-    @POST("/users/{id}")
-    Call<String> ratingUser(@Path("id") String id, @Body String valoration);
+    @POST("/users/{id}/valoration")
+    Call<String> ratingUser(@Path("id") String id, @Body String value);
 
     @POST("users/me/token")
     Call<String> sendToken(@Body String token);
