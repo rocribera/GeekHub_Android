@@ -119,7 +119,18 @@ public class UserProfile extends Fragment {
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                switch (item.getItemId())
+                {
+                    case R.id.modify_profile:
+                        // Crear nova activitat per modificar el perfil
+                        break;
+                    case R.id.log_out:
+                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.delete_account:
+                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+                }
                 return true;
             }
         });
