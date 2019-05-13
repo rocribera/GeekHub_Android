@@ -80,14 +80,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="pewdiepie"
+        android:inputType="textNoSuggestions"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
-        android:imeOptions="actionNext"/>
+        android:imeOptions="actionNext"
+        android:textColorHint="#3F51B5"
+        />
 
     <EditText
         android:id="@+id/settings_description"
@@ -95,7 +96,6 @@
         android:layout_height="wrap_content"
         android:gravity="top|start"
         android:inputType="textMultiLine"
-        android:hint="Load gamer who plays fps at 20 fps"
         android:lines="3"
         android:maxLines="3"
         android:minLines="3"
@@ -104,24 +104,25 @@
         app:layout_constraintTop_toBottomOf="@+id/textView11"
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
-        android:imeOptions="actionNext" />
+        android:imeOptions="actionNext"
+        android:textColorHint="#3F51B5" />
 
     <EditText
         android:id="@+id/settings_link"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="https://i.imgur.com/qw72OSB.png"
+        android:inputType="textNoSuggestions"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/textView12"
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:textColorHint="#3F51B5" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/settings_image"
         android:layout_width="135dp"
         android:layout_height="135dp"
         android:layout_marginStart="8dp"
@@ -142,6 +143,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_image" />
 
 </android.support.constraint.ConstraintLayout>

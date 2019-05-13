@@ -172,8 +172,8 @@ public class UserProfile extends Fragment {
         });
     }
 
-    public void showProfileUserInfo(User user){
-
+    public void showProfileUserInfo(User user)
+    {
         TextView userUsername;
         TextView userDescription;
         RatingBar userRating;
