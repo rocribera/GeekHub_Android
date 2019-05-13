@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -104,11 +105,26 @@ public class UserProfile extends Fragment {
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Settings", Toast.LENGTH_LONG).show();
+                showPopup(view);
             }
         });
 
         return rootView;
+    }
+
+    public void showPopup(View v) {
+        PopupMenu pm = new PopupMenu(this.getContext(), v);
+        pm.getMenuInflater().inflate(R.menu.popup_menu_settings_profile,pm.getMenu());
+
+        pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        pm.show();
     }
 
     @Override
