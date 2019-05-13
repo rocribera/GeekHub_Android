@@ -2,8 +2,11 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:id="@+id/settings2"
@@ -87,8 +90,7 @@
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
         android:imeOptions="actionNext"
-        android:textColorHint="#3F51B5"
-        />
+        android:textColorHint="@drawable/selector_hints" />
 
     <EditText
         android:id="@+id/settings_description"
@@ -105,7 +107,7 @@
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
         android:imeOptions="actionNext"
-        android:textColorHint="#3F51B5" />
+        android:textColorHint="@drawable/selector_hints" />
 
     <EditText
         android:id="@+id/settings_link"
@@ -119,18 +121,17 @@
         android:background="@drawable/backgroundwithborder"
         android:padding="10dp"
         android:imeOptions="actionDone"
-        android:textColorHint="#3F51B5" />
+        android:textColorHint="@drawable/selector_hints" />
 
     <ImageView
         android:id="@+id/settings_image"
         android:layout_width="135dp"
         android:layout_height="135dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toBottomOf="@+id/settings_link"
+        app:layout_constraintTop_toBottomOf="@+id/reload_image"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <Button
@@ -144,5 +145,16 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/settings_image" />
+
+    <ImageView
+        android:id="@+id/reload_image"
+        android:layout_width="50dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:tint="@color/common_google_signin_btn_text_dark_focused"
+        app:layout_constraintStart_toEndOf="@+id/settings_image"
+        app:layout_constraintTop_toBottomOf="@+id/settings_link"
+        app:srcCompat="@android:drawable/stat_notify_sync" />
 
 </android.support.constraint.ConstraintLayout>
