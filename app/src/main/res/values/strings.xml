@@ -35,7 +35,7 @@
     <string name="postDescription">Post Description</string>
     <string name="postFollowers"># Followers</string>
 
-    <string name="user_username">User username</string>
+    <string name="user_username">Username</string>
     <string name="user_description">User description</string>
 
     <string name="created_posts">Created\nPosts</string>
@@ -43,5 +43,7 @@
     <string name="subscribed_games">Subscribed\nGames</string>
 
     <string name="created_posts_oup">Posts created:</string>
+
+    <string name="profile_settings">Profile settings</string>
 
 </resources>

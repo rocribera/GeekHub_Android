@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,6 +97,14 @@ public class UserProfile extends Fragment {
                         .beginTransaction()
                         .replace(R.id.userProfileContent, fragment)
                         .commit();
+            }
+        });
+
+        ImageView buttonSettings = (ImageView) rootView.findViewById(R.id.settings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Settings", Toast.LENGTH_LONG).show();
             }
         });
 
