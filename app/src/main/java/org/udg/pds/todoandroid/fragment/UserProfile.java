@@ -2,6 +2,7 @@
 package org.udg.pds.todoandroid.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.activity.ProfileSettings;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
@@ -122,7 +124,8 @@ public class UserProfile extends Fragment {
                 switch (item.getItemId())
                 {
                     case R.id.modify_profile:
-                        // Crear nova activitat per modificar el perfil
+                        Intent i = new Intent(UserProfile.this.getActivity(), ProfileSettings.class);
+                        startActivity(i);
                         break;
                     case R.id.log_out:
                         Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
