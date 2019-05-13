@@ -45,5 +45,8 @@
     <string name="created_posts_oup">Posts created:</string>
 
     <string name="profile_settings">Profile settings</string>
+    <string name="modify_profile">Modify profile</string>
+    <string name="log_out">Log out</string>
+    <string name="delete_account">Delete account</string>
 
 </resources>

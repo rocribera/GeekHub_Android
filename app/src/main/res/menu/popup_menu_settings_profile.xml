@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/one"
-        android:title="One" />
+        android:id="@+id/modify_profile"
+        android:title="@string/modify_profile" />
     <item
-        android:id="@+id/two"
-        android:title="Two" />
+        android:id="@+id/log_out"
+        android:title="@string/log_out" />
     <item
-        android:id="@+id/three"
-        android:title="Three" />
+        android:id="@+id/delete_account"
+        android:title="@string/delete_account" />
 </menu>
