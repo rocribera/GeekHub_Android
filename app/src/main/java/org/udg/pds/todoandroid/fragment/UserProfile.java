@@ -162,9 +162,6 @@ public class UserProfile extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Changes saved!", Toast.LENGTH_LONG).show();
             }
-            else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "An error occurred, try again later", Toast.LENGTH_LONG).show();
-            }
         }
     }
 

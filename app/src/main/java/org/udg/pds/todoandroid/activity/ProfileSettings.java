@@ -98,28 +98,33 @@ public class ProfileSettings extends AppCompatActivity {
 
     public void updateUserSettings() {
         User user = new User();
+        EditText username = findViewById(R.id.settings_username);
+        EditText description = findViewById(R.id.settings_description);
+        EditText image = findViewById(R.id.settings_link);
 
-        if (originalUsername.isEmpty())
+        if (username.getText().toString().isEmpty())
             user.name=originalUsername;
         else
-            user.name=((EditText) findViewById(R.id.settings_username)).getText().toString();
+            user.name=username.getText().toString();
 
-        if (originalDescription.isEmpty())
+        if (description.getText().toString().isEmpty())
             user.description=originalDescription;
         else
-            user.description=((EditText) findViewById(R.id.settings_description)).getText().toString();
+            user.description=description.getText().toString();
 
-        if (originalImageLink.isEmpty())
+        if (image.getText().toString().isEmpty())
             user.image=originalImageLink;
         else
-            user.image=((EditText) findViewById(R.id.settings_link)).getText().toString();
+            user.image=image.getText().toString();
 
-        setUserSettings(user);
+        if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty())
+            Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
+        else
+            setUserSettings(user);
     }
 
     public void setUserSettings(User user)
     {
-
         Call<String> postCall = mTodoService.updateUser(user);
         postCall.enqueue(new Callback<String>() {
             @Override
@@ -168,7 +173,12 @@ public class ProfileSettings extends AppCompatActivity {
         username.setHint(u.name);
         description.setHint(u.description);
         linkImage.setHint(u.image);
-        new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
+
+        String link = linkImage.getText().toString();
+        if (link.isEmpty())
+            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
+        else
+            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
@@ -184,12 +194,10 @@ public class ProfileSettings extends AppCompatActivity {
             try {
                 InputStream in = new java.net.URL(imageURL).openStream();
                 bimage = BitmapFactory.decodeStream(in);
-
-            } catch (Exception e) {
             }
+            catch (Exception e) {}
             return bimage;
         }
-
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
