@@ -38,11 +38,6 @@ public class ProfileSettings extends AppCompatActivity {
     String originalDescription;
     String originalImageLink;
 
-    String newUsername;
-    String newDescription;
-    String newImageLink;
-
-
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +51,7 @@ public class ProfileSettings extends AppCompatActivity {
         Button uploadButton = (Button) findViewById(R.id.update_button);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                updateUserSettings();
             }
         });
 
@@ -97,6 +92,46 @@ public class ProfileSettings extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         getOriginalUserInfo();
+    }
+
+    public void updateUserSettings() {
+        User user = new User();
+
+        if (originalUsername.isEmpty())
+            user.name=originalUsername;
+        else
+            user.name=((EditText) findViewById(R.id.settings_username)).getText().toString();
+
+        if (originalDescription.isEmpty())
+            user.description=originalDescription;
+        else
+            user.description=((EditText) findViewById(R.id.settings_description)).getText().toString();
+
+        if (originalImageLink.isEmpty())
+            user.image=originalImageLink;
+        else
+            user.image=((EditText) findViewById(R.id.settings_link)).getText().toString();
+
+        setUserSettings(user);
+    }
+
+    public void setUserSettings(User user)
+    {
+
+        Call<String> postCall = mTodoService.updateUser(user);
+        postCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> postCall, Response<String> response) {
+                if (response.isSuccessful()) {
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> postCall, Throwable t) {
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void getOriginalUserInfo() {

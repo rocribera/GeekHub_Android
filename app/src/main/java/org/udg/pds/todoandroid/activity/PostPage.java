@@ -180,7 +180,7 @@ public class PostPage extends AppCompatActivity {
                     public void onFailure(Call<String> postCall, Throwable t) {
                     }
                 });
-                }
+            }
         });
 
         for(Post i : user.followedPosts){
