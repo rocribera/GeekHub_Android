@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -57,7 +56,7 @@ public class ProfileSettings extends AppCompatActivity {
             }
         });
 
-        // To clear focus when last input has been done and update the image if link has text
+        // To clear focus when last input has been done
         EditText linkText = findViewById(R.id.settings_link);
         linkText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -68,6 +67,15 @@ public class ProfileSettings extends AppCompatActivity {
                     imm.hideSoftInputFromWindow(v.getWindowToken(),0);
                     ConstraintLayout cl =findViewById(R.id.focusable_settings_layout);
                     cl.requestFocus();
+                }
+                return false;
+            }
+        });
+        // Update the image when link text loses focus
+        linkText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
                     // To update the image
                     EditText linkImage = findViewById(R.id.settings_link);
                     String link = linkImage.getText().toString();
@@ -75,11 +83,10 @@ public class ProfileSettings extends AppCompatActivity {
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(link);
                     else
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(originalImageLink);
-
                 }
-                return false;
             }
         });
+
     }
 
     @Override
