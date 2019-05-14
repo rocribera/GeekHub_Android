@@ -1,6 +1,8 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -123,10 +125,11 @@ public class ProfileSettings extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> postCall, Response<String> response) {
                 if (response.isSuccessful()) {
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_OK,returnIntent);
                     finish();
                 }
             }
-
             @Override
             public void onFailure(Call<String> postCall, Throwable t) {
                 Toast.makeText(ProfileSettings.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();

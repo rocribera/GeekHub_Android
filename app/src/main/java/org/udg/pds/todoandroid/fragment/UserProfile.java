@@ -1,6 +1,7 @@
 
 package org.udg.pds.todoandroid.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -114,6 +115,18 @@ public class UserProfile extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mTodoService = ((TodoApp) this.getActivity().getApplication()).getAPI();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getUserInfo();
+    }
+
     public void showPopup(View v) {
         PopupMenu pm = new PopupMenu(this.getContext(), v);
         pm.getMenuInflater().inflate(R.menu.popup_menu_settings_profile,pm.getMenu());
@@ -125,7 +138,7 @@ public class UserProfile extends Fragment {
                 {
                     case R.id.modify_profile:
                         Intent i = new Intent(UserProfile.this.getActivity(), ProfileSettings.class);
-                        startActivity(i);
+                        startActivityForResult(i,1);
                         break;
                     case R.id.log_out:
                         Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -141,16 +154,18 @@ public class UserProfile extends Fragment {
         pm.show();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mTodoService = ((TodoApp) this.getActivity().getApplication()).getAPI();
-    }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getUserInfo();
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Changes saved!", Toast.LENGTH_LONG).show();
+            }
+            else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "An error occurred, try again later", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void getUserInfo(){
@@ -160,7 +175,6 @@ public class UserProfile extends Fragment {
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
                     showProfileUserInfo(response.body());
-                    //UserProfile.this.showGameList(response.body().games);
                 } else {
                     Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
@@ -212,6 +226,5 @@ public class UserProfile extends Fragment {
             imageView.setImageBitmap(result);
         }
     }
-
 
 }
