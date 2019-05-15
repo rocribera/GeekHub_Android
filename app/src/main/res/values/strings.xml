@@ -35,13 +35,20 @@
     <string name="postDescription">Post Description</string>
     <string name="postFollowers"># Followers</string>
 
-    <string name="user_username">User username</string>
-    <string name="user_description">User description</string>
+    <string name="user_username">Username</string>
+    <string name="user_description">Description</string>
 
     <string name="created_posts">Created\nPosts</string>
     <string name="subscribed_posts">Subscribed\nPosts</string>
     <string name="subscribed_games">Subscribed\nGames</string>
 
     <string name="created_posts_oup">Posts created:</string>
+
+    <string name="profile_settings">Profile settings</string>
+    <string name="modify_profile">Modify profile</string>
+    <string name="log_out">Log out</string>
+    <string name="delete_account">Delete account</string>
+
+    <string name="user_link_image">Link to profile\'s image</string>
 
 </resources>

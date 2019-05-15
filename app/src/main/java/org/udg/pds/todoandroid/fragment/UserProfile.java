@@ -1,24 +1,29 @@
 
 package org.udg.pds.todoandroid.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.activity.ProfileSettings;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
@@ -99,6 +104,14 @@ public class UserProfile extends Fragment {
             }
         });
 
+        ImageView buttonSettings = (ImageView) rootView.findViewById(R.id.settings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopup(view);
+            }
+        });
+
         return rootView;
     }
 
@@ -114,6 +127,44 @@ public class UserProfile extends Fragment {
         getUserInfo();
     }
 
+    public void showPopup(View v) {
+        PopupMenu pm = new PopupMenu(this.getContext(), v);
+        pm.getMenuInflater().inflate(R.menu.popup_menu_settings_profile,pm.getMenu());
+
+        pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId())
+                {
+                    case R.id.modify_profile:
+                        Intent i = new Intent(UserProfile.this.getActivity(), ProfileSettings.class);
+                        startActivityForResult(i,1);
+                        break;
+                    case R.id.log_out:
+                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.delete_account:
+                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        });
+
+        pm.show();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Changes saved!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     public void getUserInfo(){
         Call<User> call = mTodoService.getMe();
         call.enqueue(new Callback<User>() {
@@ -121,7 +172,6 @@ public class UserProfile extends Fragment {
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
                     showProfileUserInfo(response.body());
-                    //UserProfile.this.showGameList(response.body().games);
                 } else {
                     Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
@@ -133,8 +183,8 @@ public class UserProfile extends Fragment {
         });
     }
 
-    public void showProfileUserInfo(User user){
-
+    public void showProfileUserInfo(User user)
+    {
         TextView userUsername;
         TextView userDescription;
         RatingBar userRating;
@@ -173,6 +223,5 @@ public class UserProfile extends Fragment {
             imageView.setImageBitmap(result);
         }
     }
-
 
 }

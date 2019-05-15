@@ -10,13 +10,12 @@
         android:id="@+id/user_image"
         android:layout_width="117dp"
         android:layout_height="108dp"
-        android:contentDescription="User's image"
-        android:src="@mipmap/ic_launcher"
+        android:src="@android:drawable/btn_dialog"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintHorizontal_bias="0.388"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
         app:layout_constraintTop_toTopOf="@+id/guideline9"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@android:drawable/btn_dialog" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline5"
@@ -33,11 +32,11 @@
         app:layout_constraintGuide_percent="0.96" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline4"
+        android:id="@+id/guideline19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.47" />
+        app:layout_constraintGuide_percent="0.87" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline10"
@@ -51,30 +50,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06" />
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
 
     <TextView
         android:id="@+id/user_username"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:text="@string/user_username"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/guideline16"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toStartOf="@+id/settings"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline9" />
 
     <TextView
         android:id="@+id/user_description"
         android:layout_width="0dp"
-        android:layout_height="73dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:text="@string/user_description"
         app:layout_constraintBottom_toBottomOf="@+id/user_image"
         app:layout_constraintEnd_toStartOf="@+id/guideline16"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toBottomOf="@+id/user_username" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="@+id/guideline18" />
 
     <RatingBar
         android:id="@+id/user_rating"
@@ -139,5 +147,16 @@
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
         app:layout_constraintTop_toTopOf="@+id/userProfileOwnPosts" />
+
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="38dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/profile_settings"
+        android:src="@drawable/ic_settings_black"
+        app:layout_constraintBottom_toTopOf="@+id/user_description"
+        app:layout_constraintEnd_toStartOf="@+id/guideline16"
+        app:layout_constraintStart_toStartOf="@+id/guideline19"
+        app:layout_constraintTop_toTopOf="@+id/guideline9" />
 
 </android.support.constraint.ConstraintLayout>

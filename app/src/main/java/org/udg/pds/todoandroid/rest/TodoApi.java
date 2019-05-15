@@ -93,5 +93,8 @@ public interface TodoApi {
 
     @POST("users/me/token")
     Call<String> sendToken(@Body String token);
+
+    @POST("users/me")
+    Call<String> updateUser(@Body User u);
 }
 
