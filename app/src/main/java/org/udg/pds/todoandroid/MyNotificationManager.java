@@ -33,7 +33,7 @@ public class MyNotificationManager {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_games_black)
+                        .setSmallIcon(R.mipmap.gh_logo)
                         .setContentTitle(title)
                         .setContentText(body);
 
