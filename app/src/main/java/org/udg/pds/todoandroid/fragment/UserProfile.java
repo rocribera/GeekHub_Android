@@ -3,12 +3,14 @@ package org.udg.pds.todoandroid.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +19,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.activity.Login;
 import org.udg.pds.todoandroid.activity.ProfileSettings;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
@@ -141,10 +145,61 @@ public class UserProfile extends Fragment {
                         startActivityForResult(i,1);
                         break;
                     case R.id.log_out:
-                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        Call<String> call = mTodoService.logout();
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if(response.isSuccessful()){
+                                    Intent intent = new Intent(UserProfile.this.getActivity(), Login.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Error logging out", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                            }
+                        });
                         break;
                     case R.id.delete_account:
-                        Toast.makeText(v.getContext(), "You clicked: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        LayoutInflater layoutInflater = (LayoutInflater) UserProfile.this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View popupDelete = layoutInflater.inflate(R.layout.delete_confirmation, null);
+                        TextView deleteText = popupDelete.findViewById(R.id.delete_text);
+                        deleteText.setText("Are you sure you want to delete your account?");
+                        PopupWindow popupWindow = new PopupWindow(UserProfile.this.getActivity());
+                        popupWindow.setContentView(popupDelete);
+                        popupWindow.showAtLocation(popupDelete, Gravity.CENTER,0,0);
+                        Button deleteConfirm = popupDelete.findViewById(R.id.delete_confirm);
+                        deleteConfirm.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Call<String> call = mTodoService.deleteMyUser();
+                                call.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        if(response.isSuccessful()){
+                                            popupWindow.dismiss();
+                                            Intent intent = new Intent(UserProfile.this.getActivity(), Login.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                        } else {
+                                            Toast.makeText(UserProfile.this.getContext(), "Error deleting user", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                    }
+                                });
+                            }
+                        });
+                        Button deleteCancel = popupDelete.findViewById(R.id.delete_cancel);
+                        deleteCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                popupWindow.dismiss();
+                            }
+                        });
                         break;
                 }
                 return true;
