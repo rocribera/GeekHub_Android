@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.fragment.FavoritesFragment;
@@ -35,6 +37,31 @@ public class NavigationActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {}
+
+            @Override
+            public void onPageSelected(int i) {}
+
+            @Override
+            public void onPageScrollStateChanged(int i)
+            {
+                switch(viewPager.getCurrentItem())
+                {
+                    case 0:
+                        bottomNavigationView.setSelectedItemId(R.id.action_favorites);
+                        break;
+                    case 1:
+                        bottomNavigationView.setSelectedItemId(R.id.action_games);
+                        break;
+                    case 2:
+                        bottomNavigationView.setSelectedItemId(R.id.action_profile);
+                        break;
+                }
+            }
+        });
+
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
                     switchView(item.getItemId());
@@ -53,7 +80,7 @@ public class NavigationActivity extends AppCompatActivity {
         switchView(bottomNavigationView.getSelectedItemId());
     }
 
-    private void switchView(int itemId) {
+    public void switchView(int itemId) {
         switch (itemId) {
             case R.id.action_favorites:
                 switchReminder=R.id.action_favorites;
