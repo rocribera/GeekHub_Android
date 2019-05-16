@@ -41,18 +41,18 @@ public class OtherUserProfile extends AppCompatActivity {
         setContentView(R.layout.other_user_profile);
 
         final FrameLayout content = this.findViewById(R.id.userProfileContent);
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.userProfileContent, new UserProfileGames())
                 .commit();
 
-        UserProfilePosts fragment = new UserProfilePosts();
+        UserProfilePosts fragmentUserProfilePost = new UserProfilePosts();
         Bundle bundle = new Bundle();
         bundle.putInt("type",1);
-        fragment.setArguments(bundle);
-        getFragmentManager()
+        fragmentUserProfilePost.setArguments(bundle);
+        getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.userProfileContent, fragment)
+                .replace(R.id.userProfileContent, fragmentUserProfilePost)
                 .commit();
     }
 
