@@ -54,7 +54,20 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     private void switchView(int itemId) {
-        viewPager.setCurrentItem(itemId);
+        switch (itemId) {
+            case R.id.action_favorites:
+                switchReminder=R.id.action_favorites;
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.action_games:
+                switchReminder=R.id.action_games;
+                viewPager.setCurrentItem(1);
+                break;
+            case R.id.action_profile:
+                switchReminder=R.id.action_profile;
+                viewPager.setCurrentItem(2);
+                break;
+        }
     }
 
     @Override
@@ -68,7 +81,7 @@ public class NavigationActivity extends AppCompatActivity {
 
         private Fragment[] childFragments;
 
-        private ViewPagerAdapter(FragmentManager fm) {
+        public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
             childFragments = new Fragment[] {
                     new FavoritesFragment(),
