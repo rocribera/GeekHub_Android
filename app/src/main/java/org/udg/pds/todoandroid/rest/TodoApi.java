@@ -96,5 +96,12 @@ public interface TodoApi {
 
     @POST("users/me")
     Call<String> updateUser(@Body User u);
+
+    @POST("users/logout")
+    Call<String> logout();
+
+    @DELETE("users/me")
+    Call<String> deleteMyUser();
+
 }
 
