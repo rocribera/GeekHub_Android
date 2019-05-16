@@ -34,51 +34,6 @@ public class PostPage extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_page);
-
-        Switch follow = (Switch) findViewById(R.id.follow_switch);
-
-        follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Long postId = getIntent().getExtras().getLong("postId");
-                if(isChecked){
-                    Call<String> followCall = mTodoService.followPost(postId.toString());
-
-                    followCall.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            if (response.isSuccessful()){
-
-                            }
-                            else{
-                                Toast.makeText(PostPage.this.getBaseContext(), "Error following post", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-
-                        }
-                    });
-                }
-                else{
-                    Call<String> call = mTodoService.unfollowPost(postId.toString());
-
-                    call.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            if (response.isSuccessful()) {
-
-                            } else {
-                                Toast.makeText(PostPage.this.getBaseContext(), "Error unfollowing post", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {}
-                    });
-                }
-            }
-        });
     }
 
     @Override
@@ -189,6 +144,49 @@ public class PostPage extends AppCompatActivity {
                 break;
             }
         }
+
+        followSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Long postId = getIntent().getExtras().getLong("postId");
+                if(isChecked){
+                    Call<String> followCall = mTodoService.followPost(postId.toString());
+
+                    followCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.isSuccessful()){
+
+                            }
+                            else{
+                                Toast.makeText(PostPage.this.getBaseContext(), "Error following post", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                }
+                else{
+                    Call<String> call = mTodoService.unfollowPost(postId.toString());
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.isSuccessful()) {
+
+                            } else {
+                                Toast.makeText(PostPage.this.getBaseContext(), "Error unfollowing post", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {}
+                    });
+                }
+            }
+        });
 
         postTitle.setText(post.title);
         postDesc.setText(post.description);
