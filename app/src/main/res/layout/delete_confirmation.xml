@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="88dp"
         android:layout_marginTop="16dp"
-        android:text="@android:string/yes"
+        android:text="@android:string/ok"
         android:textColor="@android:color/holo_red_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/delete_text" />
@@ -43,7 +43,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="@android:string/no"
+        android:text="@android:string/cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.358"
         app:layout_constraintStart_toEndOf="@+id/delete_confirm"

@@ -251,7 +251,7 @@ public class UserProfile extends Fragment {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        new UserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
+        if(user.image!=null) new UserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {

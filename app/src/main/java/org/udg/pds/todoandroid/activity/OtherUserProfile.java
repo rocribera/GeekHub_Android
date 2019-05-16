@@ -103,7 +103,7 @@ public class OtherUserProfile extends AppCompatActivity {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
+        if(user.image!=null) new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
 
         // Rating popup
 
