@@ -2,14 +2,17 @@ package org.udg.pds.todoandroid.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.fragment.FavoritesFragment;
 import org.udg.pds.todoandroid.fragment.GamesDirectory;
-import org.udg.pds.todoandroid.fragment.TaskList;
 import org.udg.pds.todoandroid.fragment.UserProfile;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
@@ -20,15 +23,44 @@ public class NavigationActivity extends AppCompatActivity {
     final String SWITCH_STATE = "switchState";
     TodoApi mTodoService;
     int switchReminder;
+    ViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {}
+
+            @Override
+            public void onPageSelected(int i) {}
+
+            @Override
+            public void onPageScrollStateChanged(int i)
+            {
+                switch(viewPager.getCurrentItem())
+                {
+                    case 0:
+                        bottomNavigationView.setSelectedItemId(R.id.action_favorites);
+                        break;
+                    case 1:
+                        bottomNavigationView.setSelectedItemId(R.id.action_games);
+                        break;
+                    case 2:
+                        bottomNavigationView.setSelectedItemId(R.id.action_profile);
+                        break;
+                }
+            }
+        });
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
@@ -48,32 +80,19 @@ public class NavigationActivity extends AppCompatActivity {
         switchView(bottomNavigationView.getSelectedItemId());
     }
 
-    private void switchView(int itemId) {
-        final FrameLayout content = findViewById(R.id.main_content);
+    public void switchView(int itemId) {
         switch (itemId) {
             case R.id.action_favorites:
-                content.removeAllViews();
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_content, new FavoritesFragment())
-                        .commit();
                 switchReminder=R.id.action_favorites;
+                viewPager.setCurrentItem(0);
                 break;
             case R.id.action_games:
-                content.removeAllViews();
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_content, new GamesDirectory())
-                        .commit();
                 switchReminder=R.id.action_games;
+                viewPager.setCurrentItem(1);
                 break;
             case R.id.action_profile:
-                content.removeAllViews();
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_content, new UserProfile())
-                        .commit();
                 switchReminder=R.id.action_profile;
+                viewPager.setCurrentItem(2);
                 break;
         }
     }
@@ -83,5 +102,35 @@ public class NavigationActivity extends AppCompatActivity {
         savedInstanceState.putInt(SWITCH_STATE, switchReminder);
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        private Fragment[] childFragments;
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+            childFragments = new Fragment[] {
+                    new FavoritesFragment(),
+                    new GamesDirectory(),
+                    new UserProfile()
+            };
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return childFragments[position];
+        }
+
+        @Override
+        public int getCount() {
+            return childFragments.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            String title = getItem(position).getClass().getName();
+            return title.subSequence(title.lastIndexOf(".") + 1, title.length());
+        }
     }
 }
