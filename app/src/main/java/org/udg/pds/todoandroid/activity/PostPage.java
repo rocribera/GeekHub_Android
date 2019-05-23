@@ -235,9 +235,9 @@ public class PostPage extends AppCompatActivity {
                             public void onResponse(Call<String> call, Response<String> response) {
                                 if(response.isSuccessful()){
                                     popupWindow.dismiss();
-                                    Intent data = new Intent();
+                                    Intent data = getIntent();
                                     data.setData(Uri.parse(post.id.toString()));
-                                    setResult(Global.RQ_DELETE_POST, data);
+                                    setResult(RESULT_OK, data);
                                     finish();
                                 } else {
                                     Toast.makeText(PostPage.this.getBaseContext(), "Error deleting post", Toast.LENGTH_LONG).show();
