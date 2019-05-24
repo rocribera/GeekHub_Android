@@ -36,8 +36,9 @@ import retrofit2.Response;
 public class MessageListActivity extends AppCompatActivity {
 
     RecyclerView mMessageRecycler;
-    private MessageListAdapter mMessageAdapter;
-    TodoApi mTodoService;
+    private static MessageListAdapter mMessageAdapter;
+    static TodoApi mTodoService;
+    static public Long active;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,9 +83,21 @@ public class MessageListActivity extends AppCompatActivity {
         getMessages();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        active = getIntent().getExtras().getLong("userId");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        active = Long.valueOf(0);
+    }
+
     private void getOtherUser(){
-        Long otherUserId = getIntent().getExtras().getLong("userId");
-        Call<User> call = mTodoService.getUser(otherUserId.toString());
+        active = getIntent().getExtras().getLong("userId");
+        Call<User> call = mTodoService.getUser(active.toString());
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -105,16 +118,14 @@ public class MessageListActivity extends AppCompatActivity {
 
     }
 
-    private void getMessages(){
-        Long otherUserId = getIntent().getExtras().getLong("userId");
-        Call<List<UserMessage>> call = mTodoService.getMyMessagesWithUser(otherUserId.toString());
+    static public void getMessages(){
+        Call<List<UserMessage>> call = mTodoService.getMyMessagesWithUser(active.toString());
         call.enqueue(new Callback<List<UserMessage>>() {
             @Override
             public void onResponse(Call<List<UserMessage>> call, Response<List<UserMessage>> response) {
                 if(response.isSuccessful()){
                     mMessageAdapter.addAll(response.body());
                 } else {
-                    Toast.makeText(getBaseContext(), "Error reading messages", Toast.LENGTH_LONG).show();
                 }
             }
 

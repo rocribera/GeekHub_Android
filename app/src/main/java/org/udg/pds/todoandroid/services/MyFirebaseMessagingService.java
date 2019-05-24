@@ -12,6 +12,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.udg.pds.todoandroid.Constants;
 import org.udg.pds.todoandroid.MyNotificationManager;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.activity.MessageListActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,37 +36,59 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        String title = "Title", body = "Body";
-        Long postID = Long.valueOf(0), gameID = Long.valueOf(0);
+        Log.d(TAG, "Message received!!!!!");
 
-        Log.d(TAG, "Mesage receiverd!!!!!");
-
-        //if the message contains data payload
-        //It is a map of custom keyvalues
-        //we can read it easily
         if(remoteMessage.getData().size() > 0){
-            title = remoteMessage.getData().get("title");
-            body = remoteMessage.getData().get("body");
-            postID = Long.parseLong(remoteMessage.getData().get("postID"));
-            gameID = Long.parseLong(remoteMessage.getData().get("gameID"));
+            String title = remoteMessage.getData().get("title");
+            String body = remoteMessage.getData().get("body");
+            if(remoteMessage.getData().get("Chat") == "0"){
+
+                //if the message contains data payload
+                //It is a map of custom keyvalues
+                //we can read it easily
+                Long postID = Long.parseLong(remoteMessage.getData().get("postID"));
+                Long gameID = Long.parseLong(remoteMessage.getData().get("gameID"));
+
+                //then here we can use the title and body to build a notification
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+
+                    NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+                    mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+                    mChannel.enableLights(true);
+                    mChannel.setLightColor(Color.RED);
+                    mChannel.enableVibration(true);
+                    mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
+
+                MyNotificationManager.getInstance(this).displayNotification(title, body, postID, gameID);
+            }
+            else{ //Message with Chat
+                Long userID = Long.parseLong(remoteMessage.getData().get("userID"));
+                if(MessageListActivity.active == userID){
+                    MessageListActivity.getMessages();
+                }
+                else{
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+                        NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+                        mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+                        mChannel.enableLights(true);
+                        mChannel.setLightColor(Color.RED);
+                        mChannel.enableVibration(true);
+                        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                        mNotificationManager.createNotificationChannel(mChannel);
+                    }
+
+                    MyNotificationManager.getInstance(this).displayNotificationChat(title, body, userID);
+                }
+            }
         }
-
-
-        //then here we can use the title and body to build a notification
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-
-            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
-            mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.RED);
-            mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-        MyNotificationManager.getInstance(this).displayNotification(title, body, postID, gameID);
     }
 }
