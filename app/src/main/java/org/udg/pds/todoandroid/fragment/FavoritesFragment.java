@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import org.udg.pds.todoandroid.R;
+import org.udg.pds.todoandroid.activity.MessageListActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +32,8 @@ public class FavoritesFragment extends Fragment {
     button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent i = new Intent(FavoritesFragment.this.getActivity(), GamesDirectory.class);
+        Intent i = new Intent(FavoritesFragment.this.getActivity(), MessageListActivity.class);
+        i.putExtra("userId",(long)2);
         startActivity(i);
       }
     });
