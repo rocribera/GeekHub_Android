@@ -18,26 +18,26 @@ import org.udg.pds.todoandroid.activity.MessageListActivity;
 public class FavoritesFragment extends Fragment {
 
 
-  public FavoritesFragment() {
-    // Required empty public constructor
-  }
+    public FavoritesFragment() {
+        // Required empty public constructor
+    }
 
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
-    View root = inflater.inflate(R.layout.content_favorites, container, false);
-    Button button = (Button)root.findViewById(R.id.button);
-    button.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Intent i = new Intent(FavoritesFragment.this.getActivity(), MessageListActivity.class);
-        i.putExtra("userId",(long)2);
-        startActivity(i);
-      }
-    });
-    return root;
-  }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View root = inflater.inflate(R.layout.content_favorites, container, false);
+        Button button = (Button)root.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FavoritesFragment.this.getActivity(), MessageListActivity.class);
+                i.putExtra("userId",(long)2);
+                startActivity(i);
+            }
+        });
+        return root;
+    }
 
 }

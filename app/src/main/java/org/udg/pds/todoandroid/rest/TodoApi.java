@@ -107,5 +107,8 @@ public interface TodoApi {
     @GET("/message/me/{id}")
     Call<List<UserMessage>> getMyMessagesWithUser(@Path("id") String id);
 
+    @POST("/message/me/{id}")
+    Call<String> sendMessageToUser(@Path("id") String id,@Body UserMessage value);
+
 }
 

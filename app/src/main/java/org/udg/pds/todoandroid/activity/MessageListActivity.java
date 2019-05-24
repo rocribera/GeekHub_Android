@@ -1,24 +1,30 @@
 package org.udg.pds.todoandroid.activity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
-import org.udg.pds.todoandroid.entity.Post;
+import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserMessage;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,11 +45,63 @@ public class MessageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_list);
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
 
+        getOtherUser();
+
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
         mMessageAdapter = new MessageListAdapter(this.getApplication());
         mMessageRecycler.setAdapter(mMessageAdapter);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        Button sendButton = (Button) findViewById(R.id.button_chatbox_send);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
+                if(!chatbox.getText().toString().isEmpty()){
+                    UserMessage um = new UserMessage();
+                    um.sendByMe=true;
+                    um.createdAt = new Date();
+                    um.message=chatbox.getText().toString();
+                    Long userId = getIntent().getExtras().getLong("userId");
+                    Call<String> postCall = mTodoService.sendMessageToUser(userId.toString(),um);
+                    postCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> postCall, Response<String> response) {
+                            if (response.isSuccessful()) {
+                                mMessageAdapter.add(um);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<String> postCall, Throwable t) {
+                            Toast.makeText(MessageListActivity.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+
         getMessages();
+    }
+
+    private void getOtherUser(){
+        Long otherUserId = getIntent().getExtras().getLong("userId");
+        Call<User> call = mTodoService.getUser(otherUserId.toString());
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    ((TextView)findViewById(R.id.chat_username)).setText(response.body().name);
+
+                    new MessageListActivity.DownloadImageFromInternet((ImageView)findViewById(R.id.chat_userlogo)).execute(response.body().image);
+
+                } else {
+                    Toast.makeText(getBaseContext(), "Error reading messages", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+            }
+        });
 
     }
 
@@ -140,9 +198,9 @@ public class MessageListActivity extends AppCompatActivity {
 
             void bind(UserMessage mes) {
                 messageText.setText(mes.message);
-
+                messageText.setTextColor(Color.BLACK);
                 // Format the stored timestamp into a readable String using method.
-                timeText.setText(new Date(mes.createdAt).toString());
+                timeText.setText(mes.createdAt.getHours()+":"+mes.createdAt.getMinutes());
             }
         }
 
@@ -155,24 +213,20 @@ public class MessageListActivity extends AppCompatActivity {
 
                 messageText = (TextView) itemView.findViewById(R.id.text_message_body);
                 timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-                nameText = (TextView) itemView.findViewById(R.id.text_message_name);
-                profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
             }
 
             void bind(UserMessage message) {
                 messageText.setText(message.message);
-
+                messageText.setTextColor(Color.BLACK);
                 // Format the stored timestamp into a readable String using method.
-                timeText.setText(new Date(message.createdAt).toString());
-
-                nameText.setText(message.sender.name);
+                timeText.setText(message.createdAt.getHours()+":"+message.createdAt.getMinutes());
             }
         }
 
         // Remove a RecyclerView item containing the Data object
-        public void remove(Long messageId) {
+        public void remove(UserMessage userMessage) {
             int position = 0;
-            while(mMessageList.get(position).id != messageId){
+            while(mMessageList.get(position) != userMessage){
                 position++;
             }
             mMessageList.remove(position);
@@ -180,8 +234,9 @@ public class MessageListActivity extends AppCompatActivity {
         }
 
         public void add(UserMessage t) {
-            mMessageList.add(0,t);
+            mMessageList.add(t);
             this.notifyItemInserted(mMessageList.size() - 1);
+            mMessageRecycler.smoothScrollToPosition(mMessageList.size()-1);
         }
 
         public void clear() {
@@ -193,6 +248,29 @@ public class MessageListActivity extends AppCompatActivity {
         public void addAll(List<UserMessage> messages){
             mMessageList = messages;
             this.notifyItemRangeInserted(0,messages.size());
+            mMessageRecycler.smoothScrollToPosition(mMessageList.size()-1);
+        }
+    }
+
+    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
+        ImageView imageView;
+
+        public DownloadImageFromInternet(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageURL = urls[0];
+            Bitmap bimage = null;
+            try {
+                InputStream in = new java.net.URL(imageURL).openStream();
+                bimage = BitmapFactory.decodeStream(in);
+            }
+            catch (Exception e) {}
+            return bimage;
+        }
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
         }
     }
 }

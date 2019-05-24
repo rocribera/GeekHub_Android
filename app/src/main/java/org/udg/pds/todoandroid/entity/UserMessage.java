@@ -1,9 +1,9 @@
 package org.udg.pds.todoandroid.entity;
 
+import java.util.Date;
+
 public class UserMessage {
-    public long id;
     public String message;
     public boolean sendByMe;
-    public User sender;
-    public long createdAt;
+    public Date createdAt;
 }
