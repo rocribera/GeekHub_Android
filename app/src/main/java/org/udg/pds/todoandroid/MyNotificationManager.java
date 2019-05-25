@@ -90,7 +90,7 @@ public class MyNotificationManager {
         }
     }
 
-    public void displayNotificationChat(String title, String body, Long userID) {
+    public void displayNotificationChat(String title, String body, Long userID, Long myId) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
@@ -108,6 +108,7 @@ public class MyNotificationManager {
 
         Intent chatIntent = new Intent(mCtx, MessageListActivity.class);
         chatIntent.putExtra("userId", userID);
+        chatIntent.putExtra("myId", myId);
 
         Intent chatListIntent = new Intent(mCtx, NavigationActivity.class);
         chatListIntent.putExtra("GoToChats", true);

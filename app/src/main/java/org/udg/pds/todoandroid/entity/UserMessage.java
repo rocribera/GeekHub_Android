@@ -4,6 +4,6 @@ import java.util.Date;
 
 public class UserMessage {
     public String message;
-    public boolean sendByMe;
+    public Long senderId;
     public Date createdAt;
 }

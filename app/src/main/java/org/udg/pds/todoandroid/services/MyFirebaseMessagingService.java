@@ -67,6 +67,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 MyNotificationManager.getInstance(this).displayNotification(title, body, postID, gameID);
             }
             else{ //Message with Chat
+                Long myId = Long.parseLong(remoteMessage.getData().get("myID"));
                 Long userID = Long.parseLong(remoteMessage.getData().get("userID"));
                 if(MessageListActivity.active == userID){
                     MessageListActivity.getMessages();
@@ -86,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         mNotificationManager.createNotificationChannel(mChannel);
                     }
 
-                    MyNotificationManager.getInstance(this).displayNotificationChat(title, body, userID);
+                    MyNotificationManager.getInstance(this).displayNotificationChat(title, body, userID, myId);
                 }
             }
         }

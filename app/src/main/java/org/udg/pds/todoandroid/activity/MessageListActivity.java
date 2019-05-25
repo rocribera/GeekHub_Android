@@ -39,13 +39,14 @@ public class MessageListActivity extends AppCompatActivity {
     private static MessageListAdapter mMessageAdapter;
     static TodoApi mTodoService;
     static public Long active;
+    private Long myId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
-
+        myId = getIntent().getExtras().getLong("myId");
         getOtherUser();
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
@@ -59,9 +60,9 @@ public class MessageListActivity extends AppCompatActivity {
                 EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
                 if(!chatbox.getText().toString().isEmpty()){
                     UserMessage um = new UserMessage();
-                    um.sendByMe=true;
                     um.createdAt = new Date();
                     um.message=chatbox.getText().toString();
+                    um.senderId = myId;
                     Long userId = getIntent().getExtras().getLong("userId");
                     Call<String> postCall = mTodoService.sendMessageToUser(userId.toString(),um);
                     postCall.enqueue(new Callback<String>() {
@@ -156,7 +157,7 @@ public class MessageListActivity extends AppCompatActivity {
         public int getItemViewType(int position) {
             UserMessage message = (UserMessage) mMessageList.get(position);
 
-            if (message.sendByMe) {
+            if (message.senderId == myId) {
                 // If the current user is the sender of the message
                 return VIEW_TYPE_MESSAGE_SENT;
             } else {
@@ -211,7 +212,12 @@ public class MessageListActivity extends AppCompatActivity {
                 messageText.setText(mes.message);
                 messageText.setTextColor(Color.BLACK);
                 // Format the stored timestamp into a readable String using method.
-                timeText.setText(mes.createdAt.getHours()+":"+mes.createdAt.getMinutes());
+                String time = "";
+                if(mes.createdAt.getHours()<10) time+="0";
+                time+=mes.createdAt.getHours()+":";
+                if(mes.createdAt.getMinutes()<10) time+="0";
+                time+=mes.createdAt.getMinutes();
+                timeText.setText(time);
             }
         }
 
@@ -230,7 +236,12 @@ public class MessageListActivity extends AppCompatActivity {
                 messageText.setText(message.message);
                 messageText.setTextColor(Color.BLACK);
                 // Format the stored timestamp into a readable String using method.
-                timeText.setText(message.createdAt.getHours()+":"+message.createdAt.getMinutes());
+                String time = "";
+                if(message.createdAt.getHours()<10) time+="0";
+                time+=message.createdAt.getHours()+":";
+                if(message.createdAt.getMinutes()<10) time+="0";
+                time+=message.createdAt.getMinutes();
+                timeText.setText(time);
             }
         }
 
