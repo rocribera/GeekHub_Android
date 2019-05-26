@@ -27,9 +27,10 @@ public class AddPost extends AppCompatActivity implements Callback<String> {
     @Override
     public void onResponse(Call<String> call, Response<String> response) {
         if (response.isSuccessful()) {
-            Intent intent = new Intent();
+            Intent intent = getIntent();
             Gson gson = new Gson();
             intent.putExtra("post", gson.toJson(newPost));
+            setResult(RESULT_OK,intent);
             finish();
         } else {
             Toast.makeText(AddPost.this.getBaseContext(), "Error adding post", Toast.LENGTH_LONG).show();
@@ -58,11 +59,11 @@ public class AddPost extends AppCompatActivity implements Callback<String> {
                 try {
                     String tit = title.getText().toString();
                     String desc = description.getText().toString();
-                    Post post = new Post();
-                    post.title = tit;
-                    post.description = desc;
+                    newPost = new Post();
+                    newPost.title = tit;
+                    newPost.description = desc;
                     Long gameId = getIntent().getExtras().getLong("gameId");
-                    Call<String> call = mTodoService.addPost(gameId.toString(),post);
+                    Call<String> call = mTodoService.addPost(gameId.toString(),newPost);
                     call.enqueue(AddPost.this);
                 } catch (Exception ex) {
                     return;

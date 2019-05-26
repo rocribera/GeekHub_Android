@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +31,7 @@ import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -93,6 +94,15 @@ public class GameProfile extends AppCompatActivity {
                 }
             }
         });
+
+        SwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swipeRefreshGameProfile);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updatePostList();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -114,6 +124,8 @@ public class GameProfile extends AppCompatActivity {
             i.putExtra("gameId",(long)gameId);
             startActivityForResult(i, Global.RQ_ADD_POST);
         });
+
+        updatePostList();
     }
 
     public void getGameInfo(){
@@ -182,7 +194,6 @@ public class GameProfile extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        this.updatePostList();
     }
 
     public void showPostList(List<Post> tl) {
@@ -194,16 +205,15 @@ public class GameProfile extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == Global.RQ_ADD_POST) {
-            if(resultCode==Global.RQ_ADD_POST){
+            if(resultCode==RESULT_OK){
                 Gson gson = new Gson();
                 Post post = gson.fromJson(getIntent().getStringExtra("post"), Post.class);
                 mAdapter.add(post);
             }
         }
         else if(requestCode == Global.RQ_DELETE_POST){
-            if(resultCode==Global.RQ_DELETE_POST) {
+            if(resultCode==RESULT_OK) {
                 mAdapter.remove(Long.parseLong(data.getData().toString()));
             }
         }
@@ -247,7 +257,7 @@ public class GameProfile extends AppCompatActivity {
 
     class TRAdapter extends RecyclerView.Adapter<GameProfile.PostViewHolder> {
 
-        List<Post> list = new ArrayList<>();
+        List<Post> list = new LinkedList<>();
         Context context;
 
         public TRAdapter(Context context) {
@@ -273,7 +283,6 @@ public class GameProfile extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent i = new Intent(GameProfile.this, PostPage.class);
                     i.putExtra("postId",list.get(position).id);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivityForResult(i, Global.RQ_DELETE_POST);
                 }
             });
@@ -307,7 +316,7 @@ public class GameProfile extends AppCompatActivity {
         }
 
         public void add(Post t) {
-            list.add(t);
+            list.add(0,t);
             this.notifyItemInserted(list.size() - 1);
         }
 
@@ -342,6 +351,5 @@ public class GameProfile extends AppCompatActivity {
             imageView.setImageBitmap(result);
         }
     }
-
 
 }

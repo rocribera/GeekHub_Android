@@ -10,6 +10,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.udg.pds.todoandroid.activity.GameProfile;
+import org.udg.pds.todoandroid.activity.MessageListActivity;
+import org.udg.pds.todoandroid.activity.NavigationActivity;
 import org.udg.pds.todoandroid.activity.PostPage;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -88,4 +90,62 @@ public class MyNotificationManager {
         }
     }
 
+    public void displayNotificationChat(String title, String body, Long userID, Long myId) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.gh_logo)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setLargeIcon(BitmapFactory.decodeResource(mCtx.getResources(), R.mipmap.gh_logo));
+
+
+        /*
+         *  Clicking on the notification will take us to this intent
+         *  Right now we are using the MainActivity as this is the only activity we have in our application
+         *  But for your project you can customize it as you want
+         * */
+
+        Intent chatIntent = new Intent(mCtx, MessageListActivity.class);
+        chatIntent.putExtra("userId", userID);
+        chatIntent.putExtra("myId", myId);
+
+        Intent chatListIntent = new Intent(mCtx, NavigationActivity.class);
+        chatListIntent.putExtra("GoToChats", true);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
+        stackBuilder.addNextIntent(chatListIntent);
+        stackBuilder.addNextIntent(chatIntent);
+
+        /*
+         *  Now we will create a pending intent
+         *  The method getActivity is taking 4 parameters
+         *  All paramters are describing themselves
+         *  0 is the request code (the second parameter)
+         *  We can detect this code in the activity that will open by this we can get
+         *  Which notification opened the activity
+         * */
+        PendingIntent pendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        /*
+         *  Setting the pending intent to notification builder
+         * */
+
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) mCtx.getSystemService(NOTIFICATION_SERVICE);
+
+        /*
+         * The first parameter is the notification id
+         * better don't give a literal here (right now we are giving a int literal)
+         * because using this id we can modify it later
+         * */
+        if (mNotifyMgr != null) {
+            mNotifyMgr.notify(1, mBuilder.build());
+        }
+
+    }
 }

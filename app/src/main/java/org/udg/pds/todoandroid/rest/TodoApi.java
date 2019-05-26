@@ -6,6 +6,7 @@ import org.udg.pds.todoandroid.entity.Post;
 import org.udg.pds.todoandroid.entity.Task;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserLogin;
+import org.udg.pds.todoandroid.entity.UserMessage;
 import org.udg.pds.todoandroid.entity.UserRegister;
 import org.udg.pds.todoandroid.entity.Game;
 
@@ -102,6 +103,12 @@ public interface TodoApi {
 
     @DELETE("users/me")
     Call<String> deleteMyUser();
+
+    @GET("/message/me/{id}")
+    Call<List<UserMessage>> getMyMessagesWithUser(@Path("id") String id);
+
+    @POST("/message/me/{id}")
+    Call<String> sendMessageToUser(@Path("id") String id,@Body UserMessage value);
 
 }
 
