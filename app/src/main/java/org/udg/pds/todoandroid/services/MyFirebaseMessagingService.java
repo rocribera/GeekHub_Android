@@ -1,9 +1,14 @@
 package org.udg.pds.todoandroid.services;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -13,6 +18,7 @@ import org.udg.pds.todoandroid.Constants;
 import org.udg.pds.todoandroid.MyNotificationManager;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.activity.MessageListActivity;
+import org.udg.pds.todoandroid.fragment.FavoritesFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,8 +75,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             else{ //Message with Chat
                 Long myId = Long.parseLong(remoteMessage.getData().get("myID"));
                 Long userID = Long.parseLong(remoteMessage.getData().get("userID"));
+                String date = remoteMessage.getData().get("date");
                 if(MessageListActivity.active == userID){
-                    MessageListActivity.getMessages();
+                    Intent intent = new Intent("NewMessage");
+                    intent.putExtra("message",body);
+                    intent.putExtra("createdAt",date);
+                    intent.putExtra("senderId",userID);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
                 }
                 else{
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

@@ -146,5 +146,6 @@ public class MyNotificationManager {
         if (mNotifyMgr != null) {
             mNotifyMgr.notify(1, mBuilder.build());
         }
+
     }
 }

@@ -1,11 +1,15 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +29,8 @@ import org.udg.pds.todoandroid.entity.UserMessage;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +43,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     RecyclerView mMessageRecycler;
     private static MessageListAdapter mMessageAdapter;
-    static TodoApi mTodoService;
+    private TodoApi mTodoService;
     static public Long active;
     private Long myId;
 
@@ -83,6 +89,9 @@ public class MessageListActivity extends AppCompatActivity {
         });
 
         getMessages();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
+                new IntentFilter("NewMessage"));
     }
 
     @Override
@@ -120,7 +129,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     }
 
-    static public void getMessages(){
+    public void getMessages(){
         Call<List<UserMessage>> call = mTodoService.getMyMessagesWithUser(active.toString());
         call.enqueue(new Callback<List<UserMessage>>() {
             @Override
@@ -136,6 +145,20 @@ public class MessageListActivity extends AppCompatActivity {
             }
         });
     }
+
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            UserMessage um = new UserMessage();
+            um.message = intent.getStringExtra("message");
+            try {
+                um.createdAt= new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss").parse(intent.getStringExtra("createdAt"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            um.senderId = intent.getLongExtra("senderId",0);
+            mMessageAdapter.add(um);
+        }
+    };
 
     public class MessageListAdapter extends RecyclerView.Adapter {
         private static final int VIEW_TYPE_MESSAGE_SENT = 1;
