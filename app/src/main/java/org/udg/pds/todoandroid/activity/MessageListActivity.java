@@ -29,8 +29,6 @@ import org.udg.pds.todoandroid.entity.UserMessage;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +40,7 @@ import retrofit2.Response;
 public class MessageListActivity extends AppCompatActivity {
 
     RecyclerView mMessageRecycler;
-    private static MessageListAdapter mMessageAdapter;
+    private MessageListAdapter mMessageAdapter;
     private TodoApi mTodoService;
     static public Long active;
     private Long myId;
@@ -150,11 +148,7 @@ public class MessageListActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             UserMessage um = new UserMessage();
             um.message = intent.getStringExtra("message");
-            try {
-                um.createdAt= new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss").parse(intent.getStringExtra("createdAt"));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            um.createdAt= new Date();
             um.senderId = intent.getLongExtra("senderId",0);
             mMessageAdapter.add(um);
         }

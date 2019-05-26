@@ -75,11 +75,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             else{ //Message with Chat
                 Long myId = Long.parseLong(remoteMessage.getData().get("myID"));
                 Long userID = Long.parseLong(remoteMessage.getData().get("userID"));
-                String date = remoteMessage.getData().get("date");
                 if(MessageListActivity.active == userID){
                     Intent intent = new Intent("NewMessage");
                     intent.putExtra("message",body);
-                    intent.putExtra("createdAt",date);
                     intent.putExtra("senderId",userID);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
