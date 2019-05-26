@@ -63,6 +63,7 @@ public class MessageListActivity extends AppCompatActivity {
                     um.createdAt = new Date();
                     um.message=chatbox.getText().toString();
                     um.senderId = myId;
+                    chatbox.setText("");
                     Long userId = getIntent().getExtras().getLong("userId");
                     Call<String> postCall = mTodoService.sendMessageToUser(userId.toString(),um);
                     postCall.enqueue(new Callback<String>() {

@@ -33,7 +33,18 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(FavoritesFragment.this.getActivity(), MessageListActivity.class);
+                i.putExtra("userId",(long)1);
+                i.putExtra("myId", (long)2);
+                startActivity(i);
+            }
+        });
+        Button button2 = (Button)root.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FavoritesFragment.this.getActivity(), MessageListActivity.class);
                 i.putExtra("userId",(long)2);
+                i.putExtra("myId", (long)1);
                 startActivity(i);
             }
         });
