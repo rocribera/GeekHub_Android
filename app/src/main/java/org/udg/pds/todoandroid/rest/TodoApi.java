@@ -1,5 +1,6 @@
 package org.udg.pds.todoandroid.rest;
 
+import org.udg.pds.todoandroid.entity.ChatInfo;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.IdObject;
 import org.udg.pds.todoandroid.entity.Post;
@@ -109,6 +110,15 @@ public interface TodoApi {
 
     @POST("/message/me/{id}")
     Call<String> sendMessageToUser(@Path("id") String id,@Body UserMessage value);
+
+    @GET("/message/me")
+    Call<List<ChatInfo>> getAllMyChats();
+
+    @GET("/message/me/open")
+    Call<List<ChatInfo>> getMyOpenChats();
+
+    @GET("/message/me/closed")
+    Call<List<ChatInfo>> getMyClosedChats();
 
 }
 

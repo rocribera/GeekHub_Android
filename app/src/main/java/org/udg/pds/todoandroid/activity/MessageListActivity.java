@@ -86,8 +86,6 @@ public class MessageListActivity extends AppCompatActivity {
             }
         });
 
-        getMessages();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
                 new IntentFilter("NewMessage"));
     }
@@ -96,6 +94,11 @@ public class MessageListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         active = getIntent().getExtras().getLong("userId");
+        this.getMessages();
+        if(!getIntent().getBooleanExtra("active",true)){
+            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
+            chatbox.setEnabled(false);
+        }
     }
 
     @Override

@@ -10,8 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
-import org.udg.pds.todoandroid.fragment.FavoritesFragment;
 import org.udg.pds.todoandroid.fragment.GamesDirectory;
+import org.udg.pds.todoandroid.fragment.OpenChats;
 import org.udg.pds.todoandroid.fragment.UserProfile;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
@@ -49,7 +49,7 @@ public class NavigationActivity extends AppCompatActivity {
                 switch(viewPager.getCurrentItem())
                 {
                     case 0:
-                        bottomNavigationView.setSelectedItemId(R.id.action_favorites);
+                        bottomNavigationView.setSelectedItemId(R.id.action_openchats);
                         break;
                     case 1:
                         bottomNavigationView.setSelectedItemId(R.id.action_games);
@@ -70,6 +70,9 @@ public class NavigationActivity extends AppCompatActivity {
         if (getIntent().hasExtra("goToProfile") && getIntent().getExtras().getBoolean("goToProfile")) {
             bottomNavigationView.setSelectedItemId(R.id.action_profile);
             getIntent().putExtra("goToProfile", false);
+        } else if(getIntent().hasExtra("GoToChats") && getIntent().getExtras().getBoolean("GoToChats")) {
+            bottomNavigationView.setSelectedItemId(R.id.action_openchats);
+            getIntent().putExtra("GoToChats", false);
         } else if (savedInstanceState==null){
             bottomNavigationView.setSelectedItemId(R.id.action_games);
         }
@@ -81,8 +84,8 @@ public class NavigationActivity extends AppCompatActivity {
 
     public void switchView(int itemId) {
         switch (itemId) {
-            case R.id.action_favorites:
-                switchReminder=R.id.action_favorites;
+            case R.id.action_openchats:
+                switchReminder=R.id.action_openchats;
                 viewPager.setCurrentItem(0);
                 break;
             case R.id.action_games:
@@ -110,7 +113,7 @@ public class NavigationActivity extends AppCompatActivity {
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
             childFragments = new Fragment[] {
-                    new FavoritesFragment(),
+                    new OpenChats(),
                     new GamesDirectory(),
                     new UserProfile()
             };
