@@ -78,8 +78,9 @@ public class OpenChatsRecycle extends Fragment {
     }
 
     public void updateOpenChatsList() {
-        Call<List<ChatInfo>> call = mTodoService.getMyOpenChats();
-
+        Call<List<ChatInfo>> call = null;
+        if(opened==1) call = mTodoService.getMyOpenChats();
+        else if(opened==0) call = mTodoService.getMyClosedChats();
         call.enqueue(new Callback<List<ChatInfo>>() {
             @Override
             public void onResponse(Call<List<ChatInfo>> call, Response<List<ChatInfo>> response) {

@@ -112,7 +112,13 @@ public interface TodoApi {
     Call<String> sendMessageToUser(@Path("id") String id,@Body UserMessage value);
 
     @GET("/message/me")
+    Call<List<ChatInfo>> getAllMyChats();
+
+    @GET("/message/me/open")
     Call<List<ChatInfo>> getMyOpenChats();
+
+    @GET("/message/me/closed")
+    Call<List<ChatInfo>> getMyClosedChats();
 
 }
 
