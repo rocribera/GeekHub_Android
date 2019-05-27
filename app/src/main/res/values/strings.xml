@@ -51,4 +51,8 @@
 
     <string name="user_link_image">Link to profile\'s image</string>
 
+    <string name="openchats">Chats</string>
+    <string name="chats_open">Chats open</string>
+    <string name="chats_closed">Chats closed</string>
+
 </resources>
