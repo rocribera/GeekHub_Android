@@ -47,7 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getData().size() > 0){
             String title = remoteMessage.getData().get("title");
             String body = remoteMessage.getData().get("body");
-            if(remoteMessage.getData().get("Chat") == "0"){
+            if(remoteMessage.getData().get("chat").equals("0")){
 
                 //if the message contains data payload
                 //It is a map of custom keyvalues
@@ -72,7 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 MyNotificationManager.getInstance(this).displayNotification(title, body, postID, gameID);
             }
-            else{ //Message with Chat
+            else if(remoteMessage.getData().get("chat").equals("1")){ //Message with Chat
                 Long myId = Long.parseLong(remoteMessage.getData().get("myID"));
                 Long userID = Long.parseLong(remoteMessage.getData().get("userID"));
                 if(MessageListActivity.active == userID){
@@ -98,6 +98,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
 
                     MyNotificationManager.getInstance(this).displayNotificationChat(title, body, userID, myId);
+                }
+            }
+            else if(remoteMessage.getData().get("chat").equals("2")){
+                Long userId = Long.parseLong(remoteMessage.getData().get("userId"));
+                if(MessageListActivity.active == userId){
+                    Intent intent = new Intent("CloseChat");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }
             }
         }

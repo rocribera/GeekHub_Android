@@ -110,6 +110,9 @@ public class MessageListActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
                 new IntentFilter("NewMessage"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(closeChatReceiver,
+                new IntentFilter("CloseChat"));
     }
 
     public void showPopupSettings(View v) {
@@ -239,6 +242,16 @@ public class MessageListActivity extends AppCompatActivity {
             um.createdAt= new Date();
             um.senderId = intent.getLongExtra("senderId",0);
             mMessageAdapter.add(um);
+        }
+    };
+
+    private BroadcastReceiver closeChatReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
+            chatbox.setEnabled(false);
+            chatbox.setHint("Chat is closed!");
+            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+            buttonSettings.setEnabled(false);
         }
     };
 
