@@ -142,6 +142,7 @@ public class MessageListActivity extends AppCompatActivity {
                                             EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
                                             chatbox.setEnabled(false);
                                             chatbox.setHint("Chat is closed!");
+                                            chatbox.setText("");
                                             ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
                                             buttonSettings.setEnabled(false);
                                             popupWindow.dismiss();
