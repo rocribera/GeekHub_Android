@@ -120,5 +120,8 @@ public interface TodoApi {
     @GET("/message/me/closed")
     Call<List<ChatInfo>> getMyClosedChats();
 
+    @POST("/message/me/{id}/close")
+    Call<String> closeChatWithUser(@Path("id") String id);
+
 }
 

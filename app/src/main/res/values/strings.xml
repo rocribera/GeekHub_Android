@@ -54,5 +54,6 @@
     <string name="openchats">Chats</string>
     <string name="chats_open">Chats open</string>
     <string name="chats_closed">Chats closed</string>
+    <string name="chat_close">Close chat</string>
 
 </resources>
