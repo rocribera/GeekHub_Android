@@ -9,16 +9,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,8 +91,87 @@ public class MessageListActivity extends AppCompatActivity {
             }
         });
 
+        ConstraintLayout constraint = (ConstraintLayout) findViewById(R.id.chat_constraint);
+        constraint.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),OtherUserProfile.class);
+                i.putExtra("userId",getIntent().getLongExtra("userId",0));
+                startActivity(i);
+            }
+        });
+
+        ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupSettings(view);
+            }
+        });
+
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
                 new IntentFilter("NewMessage"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(closeChatReceiver,
+                new IntentFilter("CloseChat"));
+    }
+
+    public void showPopupSettings(View v) {
+        PopupMenu pm = new PopupMenu(this.getBaseContext(), v);
+        pm.getMenuInflater().inflate(R.menu.popup_menu_chat,pm.getMenu());
+
+        pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId())
+                {
+                    case R.id.action_chat_closeChat:
+                        LayoutInflater layoutInflater = (LayoutInflater) MessageListActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View popupDelete = layoutInflater.inflate(R.layout.delete_confirmation, null);
+                        TextView deleteText = popupDelete.findViewById(R.id.delete_text);
+                        deleteText.setText("Are you sure you want to close this chat?");
+                        PopupWindow popupWindow = new PopupWindow(MessageListActivity.this);
+                        popupWindow.setContentView(popupDelete);
+                        popupWindow.showAtLocation(popupDelete, Gravity.CENTER,0,0);
+                        Button deleteConfirm = popupDelete.findViewById(R.id.delete_confirm);
+                        deleteConfirm.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Long userId = getIntent().getExtras().getLong("userId");
+                                Call<String> postCall = mTodoService.closeChatWithUser(userId.toString());
+                                postCall.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> postCall, Response<String> response) {
+                                        if (response.isSuccessful()) {
+                                            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
+                                            chatbox.setEnabled(false);
+                                            chatbox.setHint("Chat is closed!");
+                                            chatbox.setText("");
+                                            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+                                            buttonSettings.setEnabled(false);
+                                            popupWindow.dismiss();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<String> postCall, Throwable t) {
+                                        Toast.makeText(MessageListActivity.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        });
+                        Button deleteCancel = popupDelete.findViewById(R.id.delete_cancel);
+                        deleteCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                popupWindow.dismiss();
+                            }
+                        });
+                        break;
+                }
+                return true;
+            }
+        });
+
+        pm.show();
     }
 
     @Override
@@ -98,6 +182,9 @@ public class MessageListActivity extends AppCompatActivity {
         if(!getIntent().getBooleanExtra("active",true)){
             EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
             chatbox.setEnabled(false);
+            chatbox.setHint("Chat is closed!");
+            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+            buttonSettings.setEnabled(false);
         }
     }
 
@@ -131,6 +218,7 @@ public class MessageListActivity extends AppCompatActivity {
     }
 
     public void getMessages(){
+        mMessageAdapter.clear();
         Call<List<UserMessage>> call = mTodoService.getMyMessagesWithUser(active.toString());
         call.enqueue(new Callback<List<UserMessage>>() {
             @Override
@@ -154,6 +242,16 @@ public class MessageListActivity extends AppCompatActivity {
             um.createdAt= new Date();
             um.senderId = intent.getLongExtra("senderId",0);
             mMessageAdapter.add(um);
+        }
+    };
+
+    private BroadcastReceiver closeChatReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
+            chatbox.setEnabled(false);
+            chatbox.setHint("Chat is closed!");
+            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+            buttonSettings.setEnabled(false);
         }
     };
 
