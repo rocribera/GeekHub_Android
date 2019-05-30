@@ -197,6 +197,14 @@ public class PostPage extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupDelete);
 
+        followersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(),FollowersList.class);
+                    i.putExtra("postId", post.id);
+                    startActivity(i);
+            }
+        });
         creatorProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

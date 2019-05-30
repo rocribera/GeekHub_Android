@@ -24,6 +24,7 @@
         </service>
 
         <activity android:name=".activity.AddPost"/>
+        <activity android:name=".activity.FollowersList"/>
         <activity android:name=".activity.GameProfile"
             android:parentActivityName=".activity.NavigationActivity">
             <meta-data
