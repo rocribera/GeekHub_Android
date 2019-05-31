@@ -73,23 +73,6 @@ public class FollowersList extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == Global.RQ_ADD_POST) {
-            if(resultCode==Global.RQ_ADD_POST){
-                Gson gson = new Gson();
-                User user = gson.fromJson(getIntent().getStringExtra("user"), User.class);
-                mAdapter.add(user);
-            }
-        }
-        else if(requestCode == Global.RQ_DELETE_POST){
-            if(resultCode==Global.RQ_DELETE_POST) {
-                mAdapter.remove(Long.parseLong(data.getData().toString()));
-            }
-        }
-    }
-
     public void updateUserList() {
         Long postId = getIntent().getExtras().getLong("postId");
         Call<List<User>> call = mTodoService.getFollowers(postId.toString());
