@@ -224,7 +224,7 @@ public class MessageListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<UserMessage>> call, Response<List<UserMessage>> response) {
                 if(response.isSuccessful()){
-                    mMessageAdapter.addAll(response.body());
+                    if(!response.body().isEmpty()) mMessageAdapter.addAll(response.body());
                 } else {
                 }
             }

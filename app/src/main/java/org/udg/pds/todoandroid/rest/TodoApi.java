@@ -126,5 +126,7 @@ public interface TodoApi {
     @POST("/message/me/{id}/close")
     Call<String> closeChatWithUser(@Path("id") String id);
 
+    @POST("/message/me/{id}/open")
+    Call<ChatInfo> openChatWithUser(@Path("id") String id);
 }
 
