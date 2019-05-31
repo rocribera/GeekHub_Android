@@ -36,6 +36,7 @@ public class MyNotificationManager {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
+                        .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.gh_logo)
                         .setContentTitle(title)
                         .setContentText(body)
@@ -94,6 +95,7 @@ public class MyNotificationManager {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
+                        .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.gh_logo)
                         .setContentTitle(title)
                         .setContentText(body)
