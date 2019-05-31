@@ -24,9 +24,11 @@ import com.google.gson.Gson;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
+import org.udg.pds.todoandroid.entity.ChatInfo;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.User;
+import org.udg.pds.todoandroid.fragment.OpenChatsRecycle;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
 import org.w3c.dom.Text;
@@ -139,6 +141,35 @@ public class FollowersList extends AppCompatActivity {
                     Intent i = new Intent(FollowersList.this, OtherUserProfile.class);
                     i.putExtra("userId",list.get(position).id);
                     startActivity(i);
+                }
+            });
+            holder.chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Long userID = list.get(position).id;
+                    Call<ChatInfo> call = mTodoService.openChatWithUser(userID.toString());
+
+                    call.enqueue(new Callback<ChatInfo>() {
+                        @Override
+                        public void onResponse(Call<ChatInfo> call, Response<ChatInfo> response) {
+                            if (response.isSuccessful()) {
+                                Intent i = new Intent(FollowersList.this, MessageListActivity.class);
+
+                                i.putExtra("userId",userID);
+                                i.putExtra("myId",response.body().myUserId);
+                                i.putExtra("active",response.body().chatActive);
+
+                                startActivity(i);
+                            } else {
+                                Toast.makeText(FollowersList.this.getBaseContext(), "Error reading User", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ChatInfo> call, Throwable t) {
+
+                        }
+                    });
                 }
             });
         }
