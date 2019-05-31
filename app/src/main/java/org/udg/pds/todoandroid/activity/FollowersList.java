@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class FollowersList extends AppCompatActivity {
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
         
         mRecyclerView = findViewById(R.id.followers_recycleView);
-        mAdapter = new FollowersList.TRAdapter(this.getApplication());
+        mAdapter = new TRAdapter(this.getApplication());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -89,21 +91,24 @@ public class FollowersList extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-
             }
         });
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        Button username;
+        TextView username;
         Button chat;
         View view;
+        ImageView logo;
+        ConstraintLayout constraint;
 
         UserViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             chat = itemView.findViewById(R.id.chatButton);
-            username = itemView.findViewById(R.id.usernameButton);
+            username = itemView.findViewById(R.id.followers_username);
+            logo = itemView.findViewById(R.id.UserLogo);
+            constraint = itemView.findViewById(R.id.itemRelLayout);
         }
     }
 
@@ -127,14 +132,13 @@ public class FollowersList extends AppCompatActivity {
         @Override
         public void onBindViewHolder(FollowersList.UserViewHolder holder, final int position) {
             holder.username.setText(list.get(position).name);
-
-            holder.view.setOnClickListener(new View.OnClickListener() {
+            new FollowersList.DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).image);
+            holder.constraint.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(FollowersList.this, OtherUserProfile.class);
-                    i.putExtra("UserId",list.get(position).id);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivityForResult(i, Global.RQ_DELETE_POST);
+                    i.putExtra("userId",list.get(position).id);
+                    startActivity(i);
                 }
             });
         }
@@ -198,7 +202,7 @@ public class FollowersList extends AppCompatActivity {
             return bimage;
         }
 
-        protected void onUserExecute(Bitmap result) {
+        protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
     }
