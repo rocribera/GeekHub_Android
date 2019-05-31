@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.PopupWindow;
 import android.widget.Switch;
@@ -84,10 +85,9 @@ public class PostPage extends AppCompatActivity {
     public void showPostInfo(Post post, User user){
         TextView postTitle;
         TextView postDesc;
-        TextView postFollowers;
 
-        Switch activeSwitch;
-        Switch followSwitch;
+        CheckBox followCheck;
+        CheckBox activeCheck;
 
         Button deleteButton;
         Button followersButton;
@@ -96,30 +96,29 @@ public class PostPage extends AppCompatActivity {
         postTitle = findViewById(R.id.post_title_text);
         postDesc = findViewById(R.id.Description);
         creatorProfile = findViewById(R.id.author);
-        postFollowers = findViewById(R.id.followers_text);
 
-        activeSwitch = findViewById(R.id.active_switch);
-        followSwitch = findViewById(R.id.follow_switch);
+        activeCheck = findViewById(R.id.active_checkBox);
+        followCheck = findViewById(R.id.follow_checkBox);
 
         deleteButton = findViewById(R.id.delete_button);
         followersButton = findViewById(R.id.chatButton);
 
         if(user.id == post.userId){
             deleteButton.setVisibility(View.VISIBLE);
-            activeSwitch.setVisibility(View.VISIBLE);
-            followSwitch.setVisibility(View.GONE);
+            activeCheck.setVisibility(View.VISIBLE);
+            followCheck.setVisibility(View.GONE);
             followersButton.setVisibility(View.VISIBLE);
         }
         else{
             deleteButton.setVisibility(View.GONE);
             followersButton.setVisibility(View.GONE);
-            activeSwitch.setVisibility(View.GONE);
-            followSwitch.setVisibility(View.VISIBLE);
+            activeCheck.setVisibility(View.GONE);
+            followCheck.setVisibility(View.VISIBLE);
         }
 
-        if(post.active) activeSwitch.setChecked(true);
+        if(post.active) activeCheck.setChecked(true);
 
-        activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        activeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Call<String> postCall = mTodoService.toggleActivePost(((Long)post.id).toString());
@@ -140,12 +139,12 @@ public class PostPage extends AppCompatActivity {
 
         for(Post i : user.followedPosts){
             if(i.id == post.id){
-                followSwitch.setChecked(true);
+                followCheck.setChecked(true);
                 break;
             }
         }
 
-        followSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        followCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Long postId = getIntent().getExtras().getLong("postId");
@@ -190,14 +189,22 @@ public class PostPage extends AppCompatActivity {
 
         postTitle.setText(post.title);
         postDesc.setText(post.description);
-        creatorProfile.setText(post.username);
-        postFollowers.setText(post.followers.size() + " followers");
+        creatorProfile.setText("Offer by: " + post.username);
+        followersButton.setText(post.followers.size() + " interested");
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupDelete = layoutInflater.inflate(R.layout.delete_confirmation, null);
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupDelete);
 
+        followersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent i = new Intent(getApplicationContext(),FollowersList.class);
+                    i.putExtra("postId", post.id);
+                    startActivity(i);
+            }
+        });
         creatorProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
