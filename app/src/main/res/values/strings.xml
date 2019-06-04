@@ -52,12 +52,13 @@
 
     <string name="user_link_image">Link to profile\'s image</string>
 
-    <string name="openchats">Chats</string>
+    <string name="openchats">Open new chat</string>
     <string name="chats_open">Chats open</string>
     <string name="chats_closed">Chats closed</string>
     <string name="chat_close">Close chat</string>
     <string name="user_block">Block User</string>
     <string name="user_unblock">Unblock User</string>
     <string name="user_otherBlock">This user blocked you</string>
+    <string name="chats">Chats</string>
 
 </resources>

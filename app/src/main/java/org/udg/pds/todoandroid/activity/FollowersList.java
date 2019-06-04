@@ -153,13 +153,23 @@ public class FollowersList extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<ChatInfo> call, Response<ChatInfo> response) {
                             if (response.isSuccessful()) {
-                                Intent i = new Intent(FollowersList.this, MessageListActivity.class);
+                                if(response.body().blockUser.equals(userID)){
+                                    Toast.makeText(FollowersList.this.getBaseContext(), "This user blocked you so you cannot open a new chat with him", Toast.LENGTH_LONG).show();
+                                    holder.chat.setEnabled(false);
+                                    holder.chat.setText("Blocked");
+                                } else if(response.body().blockUser>0){
+                                    Toast.makeText(FollowersList.this.getBaseContext(), "You blocked this user so you cannot open a new chat with him", Toast.LENGTH_LONG).show();
+                                    holder.chat.setEnabled(false);
+                                    holder.chat.setText("Blocked");
+                                } else {
+                                    Intent i = new Intent(FollowersList.this, MessageListActivity.class);
 
-                                i.putExtra("userId",userID);
-                                i.putExtra("myId",response.body().myUserId);
-                                i.putExtra("active",response.body().chatActive);
+                                    i.putExtra("userId", userID);
+                                    i.putExtra("myId", response.body().myUserId);
+                                    i.putExtra("active", response.body().chatActive);
 
-                                startActivity(i);
+                                    startActivity(i);
+                                }
                             } else {
                                 Toast.makeText(FollowersList.this.getBaseContext(), "Error reading User", Toast.LENGTH_LONG).show();
                             }
