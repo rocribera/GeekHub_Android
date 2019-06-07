@@ -49,6 +49,7 @@ public class MessageListActivity extends AppCompatActivity {
     private TodoApi mTodoService;
     static public Long active;
     private Long myId;
+    public boolean closed = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,8 @@ public class MessageListActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<String> postCall, Response<String> response) {
                             if (response.isSuccessful()) {
-                                mMessageAdapter.add(um);
+                                if(response.body().equals("Closed")) closeChat();
+                                else mMessageAdapter.add(um);
                             }
                         }
                         @Override
@@ -142,12 +144,7 @@ public class MessageListActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<String> postCall, Response<String> response) {
                                         if (response.isSuccessful()) {
-                                            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
-                                            chatbox.setEnabled(false);
-                                            chatbox.setHint("Chat is closed!");
-                                            chatbox.setText("");
-                                            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
-                                            buttonSettings.setEnabled(false);
+                                            closeChat();
                                             popupWindow.dismiss();
                                         }
                                     }
@@ -174,17 +171,25 @@ public class MessageListActivity extends AppCompatActivity {
         pm.show();
     }
 
+    private void closeChat(){
+        if(!closed) {
+            EditText chatbox = (EditText) findViewById(R.id.edittext_chatbox);
+            chatbox.setEnabled(false);
+            chatbox.setHint("Chat is closed!");
+            chatbox.setText("");
+            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+            buttonSettings.setEnabled(false);
+            closed = true;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         active = getIntent().getExtras().getLong("userId");
         this.getMessages();
         if(!getIntent().getBooleanExtra("active",true)){
-            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
-            chatbox.setEnabled(false);
-            chatbox.setHint("Chat is closed!");
-            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
-            buttonSettings.setEnabled(false);
+            closeChat();
         }
     }
 
@@ -242,16 +247,20 @@ public class MessageListActivity extends AppCompatActivity {
             um.createdAt= new Date();
             um.senderId = intent.getLongExtra("senderId",0);
             mMessageAdapter.add(um);
+            if(closed) {
+                EditText chatbox = (EditText) findViewById(R.id.edittext_chatbox);
+                chatbox.setEnabled(true);
+                chatbox.setHint("Enter message");
+                ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
+                buttonSettings.setEnabled(true);
+                closed = false;
+            }
         }
     };
 
     private BroadcastReceiver closeChatReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            EditText chatbox = (EditText)findViewById(R.id.edittext_chatbox);
-            chatbox.setEnabled(false);
-            chatbox.setHint("Chat is closed!");
-            ImageView buttonSettings = (ImageView) findViewById(R.id.chat_settings);
-            buttonSettings.setEnabled(false);
+            closeChat();
         }
     };
 

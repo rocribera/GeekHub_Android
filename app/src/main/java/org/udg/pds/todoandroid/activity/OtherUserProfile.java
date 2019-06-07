@@ -34,11 +34,15 @@ import retrofit2.Response;
 public class OtherUserProfile extends AppCompatActivity {
 
     TodoApi mTodoService;
+    Long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.other_user_profile);
+
+        mTodoService = ((TodoApp) this.getApplication()).getAPI();
+        userId = getIntent().getExtras().getLong("userId");
 
         final FrameLayout content = this.findViewById(R.id.userProfileContent);
         getSupportFragmentManager()
@@ -54,12 +58,110 @@ public class OtherUserProfile extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.userProfileContent, fragmentUserProfilePost)
                 .commit();
+
+        checkBlock();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mTodoService = ((TodoApp) this.getApplication()).getAPI();
+    public void checkBlock(){
+        Call<String> call = mTodoService.checkUserBlock(userId.toString());
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                    Button blockUserButton = findViewById(R.id.user_block_button);
+                    Long blockType = Long.parseLong(response.body());
+                    if(response.body() == null || blockType == 0) {
+
+
+                        blockUserButton.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                blockUser(true,userId);
+                            }
+                        });
+
+
+                    }
+                    else{
+                        if(userId.equals(blockType)){ //He blocked you
+                            blockUserButton.setText(getString(R.string.user_otherBlock));
+                            blockUserButton.setEnabled(false);
+                        }
+                        else{
+                            blockUserButton.setText(getString(R.string.user_unblock));
+                            blockUserButton.setOnClickListener(new View.OnClickListener() {
+                                public void onClick(View v) {
+                                    blockUser(false,userId);
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Toast.makeText(getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+            }
+        });
+    }
+
+    public void blockUser(boolean block, Long userId){
+        LayoutInflater layoutInflater = (LayoutInflater) OtherUserProfile.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupDelete = layoutInflater.inflate(R.layout.delete_confirmation, null);
+        TextView deleteText = popupDelete.findViewById(R.id.delete_text);
+        if(block) deleteText.setText("Are you sure you want to block this user?");
+        else deleteText.setText("Are you sure you want to unblock this user?");
+        PopupWindow popupWindow = new PopupWindow(OtherUserProfile.this);
+        popupWindow.setContentView(popupDelete);
+        popupWindow.showAtLocation(popupDelete, Gravity.CENTER,0,0);
+        Button deleteConfirm = popupDelete.findViewById(R.id.delete_confirm);
+        deleteConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<String> call = null;
+                if(block) call = mTodoService.blockUserWithId(userId.toString());
+                else call = mTodoService.unblockUserWithId(userId.toString());
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if(response.isSuccessful()){
+                            Button blockUserButton = findViewById(R.id.user_block_button);
+                            if(block){
+                                blockUserButton.setText(getString(R.string.user_unblock));
+                                blockUserButton.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        blockUser(false,userId);
+                                    }
+                                });
+                            }
+                            else{
+                                blockUserButton.setText(getString(R.string.user_block));
+                                blockUserButton.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        blockUser(true,userId);
+                                    }
+                                });
+                            }
+                            popupWindow.dismiss();
+                        } else {
+                            Toast.makeText(getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                    }
+                });
+            }
+        });
+        Button deleteCancel = popupDelete.findViewById(R.id.delete_cancel);
+        deleteCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
     }
 
     @Override
@@ -69,8 +171,6 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     public void getUserInfo(){
-
-        Long userId = getIntent().getExtras().getLong("userId");
         Call<User> call = mTodoService.getUser(userId.toString());
         call.enqueue(new Callback<User>() {
             @Override

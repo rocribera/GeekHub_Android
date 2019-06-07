@@ -4,4 +4,5 @@ public class ChatInfo {
     public Long myUserId;
     public User otherUser;
     public boolean chatActive;
+    public Long blockUser;
 }

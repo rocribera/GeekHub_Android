@@ -37,70 +37,69 @@ import retrofit2.Response;
 
 
 public class OpenChats extends Fragment {
-    TodoApi mTodoService;
+
+    private boolean openChat = true;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View rootView=inflater.inflate(R.layout.open_chats, container, false);
+        rootView=inflater.inflate(R.layout.open_chats, container, false);
         OpenChatsRecycle fragment = new OpenChatsRecycle();
-        Bundle bundle = new Bundle();
-        bundle.putInt("opened",1);
-        fragment.setArguments(bundle);
-        final FrameLayout content = rootView.findViewById(R.id.chatOpenFrame);
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.chatOpenFrame, fragment)
-                .commit();
+        updateChats();
         Button buttonOpen = (Button)rootView.findViewById(R.id.chatsOpenButtonOpen);
         Button buttonClosed = (Button)rootView.findViewById(R.id.chatsOpenButtonClosed);
-        buttonOpen.setTextColor(Color.BLACK);
-        buttonClosed.setTextColor(Color.LTGRAY);
         buttonOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonOpen.setTextColor(Color.BLACK);
-                buttonClosed.setTextColor(Color.LTGRAY);
-                content.removeAllViews();
-                OpenChatsRecycle fragment = new OpenChatsRecycle();
-                Bundle bundle = new Bundle();
-                bundle.putInt("opened",1);
-                fragment.setArguments(bundle);
-                getChildFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.chatOpenFrame, fragment)
-                        .commit();
+                openChat = true;
+                updateChats();
             }
         });
         buttonClosed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonOpen.setTextColor(Color.LTGRAY);
-                buttonClosed.setTextColor(Color.BLACK);
-                content.removeAllViews();
-                OpenChatsRecycle fragment = new OpenChatsRecycle();
-                Bundle bundle = new Bundle();
-                bundle.putInt("opened",0);
-                fragment.setArguments(bundle);
-                getChildFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.chatOpenFrame, fragment)
-                        .commit();
+                openChat = false;
+                updateChats();
             }
         });
 
         return rootView;
     }
 
+    private void updateChats(){
+        Button buttonOpen = (Button)rootView.findViewById(R.id.chatsOpenButtonOpen);
+        Button buttonClosed = (Button)rootView.findViewById(R.id.chatsOpenButtonClosed);
+        final FrameLayout content = rootView.findViewById(R.id.chatOpenFrame);
+        if(openChat){
+            buttonOpen.setTextColor(Color.BLACK);
+            buttonClosed.setTextColor(Color.LTGRAY);
+        }
+        else {
+            buttonOpen.setTextColor(Color.LTGRAY);
+            buttonClosed.setTextColor(Color.BLACK);
+        }
+        content.removeAllViews();
+        OpenChatsRecycle fragment = new OpenChatsRecycle();
+        Bundle bundle = new Bundle();
+        if(openChat) bundle.putInt("opened",1);
+        else bundle.putInt("opened",0);
+        fragment.setArguments(bundle);
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.chatOpenFrame, fragment)
+                .commit();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        mTodoService = ((TodoApp) this.getActivity().getApplication()).getAPI();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        updateChats();
     }
 }

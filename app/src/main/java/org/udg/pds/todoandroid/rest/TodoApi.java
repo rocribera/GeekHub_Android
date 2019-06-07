@@ -128,5 +128,14 @@ public interface TodoApi {
 
     @POST("/message/me/{id}/open")
     Call<ChatInfo> openChatWithUser(@Path("id") String id);
+
+    @GET("/users/me/{id}/block")
+    Call<String> checkUserBlock(@Path("id") String id);
+
+    @POST("/users/me/{id}/block")
+    Call<String> blockUserWithId(@Path("id") String id);
+
+    @DELETE("/users/me/{id}/block")
+    Call<String> unblockUserWithId(@Path("id") String id);
 }
 
