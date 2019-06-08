@@ -1,5 +1,6 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,10 +31,13 @@ import retrofit2.Response;
 public class PostPage extends AppCompatActivity {
 
     TodoApi mTodoService;
+    public static Activity postPage;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postPage = this;
+
         setContentView(R.layout.post_page);
     }
 
@@ -89,6 +93,7 @@ public class PostPage extends AppCompatActivity {
         CheckBox followCheck;
         CheckBox activeCheck;
 
+        Button editButton;
         Button deleteButton;
         Button followersButton;
         Button creatorProfile;
@@ -100,6 +105,7 @@ public class PostPage extends AppCompatActivity {
         activeCheck = findViewById(R.id.active_checkBox);
         followCheck = findViewById(R.id.follow_checkBox);
 
+        editButton = findViewById(R.id.edit_button);
         deleteButton = findViewById(R.id.delete_button);
         followersButton = findViewById(R.id.chatButton);
 
@@ -108,12 +114,14 @@ public class PostPage extends AppCompatActivity {
             activeCheck.setVisibility(View.VISIBLE);
             followCheck.setVisibility(View.GONE);
             followersButton.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.VISIBLE);
         }
         else{
             deleteButton.setVisibility(View.GONE);
             followersButton.setVisibility(View.GONE);
             activeCheck.setVisibility(View.GONE);
             followCheck.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.GONE);
         }
 
         if(post.active) activeCheck.setChecked(true);
@@ -197,6 +205,16 @@ public class PostPage extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(this);
         popupWindow.setContentView(popupDelete);
 
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),EditPost.class);
+                i.putExtra("postId", post.id);
+                i.putExtra("title", post.title);
+                i.putExtra("body", post.description);
+                startActivityForResult(i, Global.RQ_ADD_POST);
+            }
+        });
         followersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
