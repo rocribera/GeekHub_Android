@@ -137,5 +137,8 @@ public interface TodoApi {
 
     @DELETE("/users/me/{id}/block")
     Call<String> unblockUserWithId(@Path("id") String id);
+
+    @POST("/posts/{id}")
+    Call<String> editPost(@Path("id") String id,@Body Post desc);
 }
 

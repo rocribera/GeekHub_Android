@@ -32,6 +32,7 @@
                 android:value=".activity.NavigationActivity" />
         </activity>
         <activity android:name=".activity.Register" />
+        <activity android:name=".activity.EditPost" />
         <activity
             android:name=".activity.PostPage"
             android:parentActivityName=".activity.GameProfile">
