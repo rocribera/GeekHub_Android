@@ -1,10 +1,7 @@
 package org.udg.pds.todoandroid.services;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,13 +13,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.udg.pds.todoandroid.Constants;
 import org.udg.pds.todoandroid.MyNotificationManager;
-import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.activity.MessageListActivity;
-import org.udg.pds.todoandroid.fragment.FavoritesFragment;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 //class extending FirebaseMessagingService
 public class MyFirebaseMessagingService extends FirebaseMessagingService {

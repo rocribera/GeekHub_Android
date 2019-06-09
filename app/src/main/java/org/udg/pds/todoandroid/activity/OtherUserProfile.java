@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
@@ -26,6 +27,7 @@ import org.udg.pds.todoandroid.fragment.UserProfilePosts;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

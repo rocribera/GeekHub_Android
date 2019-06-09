@@ -18,12 +18,13 @@ package com.franmontiel.persistentcookiejar;
 
 import com.franmontiel.persistentcookiejar.cache.CookieCache;
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
-import okhttp3.Cookie;
-import okhttp3.HttpUrl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 
 public class PersistentCookieJar implements ClearableCookieJar {
 
