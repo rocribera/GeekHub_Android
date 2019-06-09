@@ -65,16 +65,18 @@
 
     <Button
         android:id="@+id/delete_button"
-        style="@style/Widget.AppCompat.Button"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="@font/dancingscript_bold"
         android:text="Delete"
         android:textAllCaps="false"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/edit_button"
         app:layout_constraintStart_toEndOf="@+id/active_checkBox"
         app:layout_constraintTop_toTopOf="@+id/bottom_guideline" />
 
@@ -150,7 +152,6 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/dancingscript_bold"
@@ -158,7 +159,6 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline23"
-        app:layout_constraintStart_toEndOf="@+id/delete_button"
         app:layout_constraintTop_toTopOf="@+id/bottom_guideline" />
 
 </android.support.constraint.ConstraintLayout>

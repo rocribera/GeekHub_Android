@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.udg.pds.todoandroid.activity.GameProfile;
 import org.udg.pds.todoandroid.activity.MessageListActivity;

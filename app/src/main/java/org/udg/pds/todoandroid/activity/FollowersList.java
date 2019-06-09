@@ -14,24 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.ChatInfo;
-import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.User;
-import org.udg.pds.todoandroid.entity.User;
-import org.udg.pds.todoandroid.fragment.OpenChatsRecycle;
 import org.udg.pds.todoandroid.rest.TodoApi;
-import org.udg.pds.todoandroid.util.Global;
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;

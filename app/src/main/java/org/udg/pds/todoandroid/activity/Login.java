@@ -1,12 +1,6 @@
 package org.udg.pds.todoandroid.activity;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,14 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.udg.pds.todoandroid.Constants;
-import org.udg.pds.todoandroid.MyNotificationManager;
 import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.entity.UserLogin;
 import org.udg.pds.todoandroid.rest.TodoApi;
-import org.udg.pds.todoandroid.services.MyFirebaseMessagingService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
