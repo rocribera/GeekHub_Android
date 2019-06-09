@@ -67,3 +67,34 @@
 * [As a user I can rate the other profiles ANDROID](https://wuilder.com/jira/browse/PDS19_3C-5) 40
 * [As a user I can edit my own profile page ANDROID](https://wuilder.com/jira/browse/PDS19_3C-143) 40
 * [Fix some issues ANDROID](https://wuilder.com/jira/browse/PDS19_3C-71) 10
+
+# Sprint 4
+## Oriol Masferrer Tort
+* Total ANDROID: 90
+* [As a user I can check my active chats](https://wuilder.com/jira/browse/PDS19_3C-13) 50
+* [As a user I can end a conversation of a follower](https://wuilder.com/jira/browse/PDS19_3C-15)15
+* [As a user I can block other users](https://wuilder.com/jira/browse/PDS19_3C-12) 10
+* [As a user I can reload the posts from the GameProfile](https://wuilder.com/jira/browse/PDS19_3C-145) 10
+
+* Total SERVER: 90
+* [As a user I can open a conversation of a follower](https://wuilder.com/jira/browse/PDS19_3C-10) 10
+* [As a user I can check my active chats](https://wuilder.com/jira/browse/PDS19_3C-13) 60
+* [As a user I can end a conversation of a follower](https://wuilder.com/jira/browse/PDS19_3C-15) 10
+* [As a user I can block other users](https://wuilder.com/jira/browse/PDS19_3C-12) 10
+
+## Roc Ribera Blasi
+* Total ANDROID: 90
+* [As a user I can open a conversation of a follower](https://wuilder.com/jira/browse/PDS19_3C-10) 10
+* [As a user I can check my active chats](https://wuilder.com/jira/browse/PDS19_3C-13) 50
+* [As a user I can edit my post](https://wuilder.com/jira/browse/PDS19_3C-144) 20
+* [Better Interface](https://wuilder.com/jira/browse/PDS19_3C-146) 10
+
+* Total SERVER: 55
+* [As a user I can check my active chats](https://wuilder.com/jira/browse/PDS19_3C-13) 25
+* [As a user I can open a conversation of a follower](https://wuilder.com/jira/browse/PDS19_3C-10) 10
+* [As a user I can edit my post](https://wuilder.com/jira/browse/PDS19_3C-144) 30
+
+
+## Adrià Tarradas Planella
+* Total ANDROID: 21
+* [As a user I can scroll through the fragments by sliding my finger](https://wuilder.com/jira/browse/PDS19_3C-148) 20
