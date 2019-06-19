@@ -3,6 +3,7 @@ package org.udg.pds.todoandroid.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -27,7 +28,6 @@ import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
-import org.udg.pds.todoandroid.util.NetworkClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class ProfileSettings extends AppCompatActivity {
 
@@ -47,6 +46,7 @@ public class ProfileSettings extends AppCompatActivity {
     String originalUsername;
     String originalDescription;
     String originalImageLink;
+    Uri uriImage;
     boolean uploadImage;
 
     @Override
@@ -131,7 +131,9 @@ public class ProfileSettings extends AppCompatActivity {
         else
             user.image=image.getText().toString();
 
-        if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty())
+        user.uploadedImage=uploadImage;
+
+        if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty() && !uploadImage)
             Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
         else
             setUserSettings(user);
@@ -144,14 +146,44 @@ public class ProfileSettings extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> postCall, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK,returnIntent);
-                    finish();
+                    if (uploadImage)
+                    {
+                        String uriPath = getRealPathFromURI(uriImage);
+                        //Create a file object using file path
+                        File file = new File(uriPath);
+                        // Create a request body with file and image media type
+                        RequestBody requestFile =
+                                RequestBody.create(
+                                        MediaType.parse(getContentResolver().getType(uriImage)),
+                                        file
+                                );
+                        MultipartBody.Part image=MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                        // Execute the call
+                        Call<String> call = mTodoService.uploadImage(image);
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                Intent returnIntent = new Intent();
+                                setResult(Activity.RESULT_OK,returnIntent);
+                                finish();
+                            }
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Toast.makeText(ProfileSettings.this.getBaseContext(), "Fail uploading image", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }
                 }
             }
             @Override
             public void onFailure(Call<String> postCall, Throwable t) {
-                Toast.makeText(ProfileSettings.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "Fail updating the user", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -189,10 +221,13 @@ public class ProfileSettings extends AppCompatActivity {
         linkImage.setHint(u.image);
 
         String link = linkImage.getText().toString();
-        if (link.isEmpty())
-            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
-        else
-            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
+        if (!uploadImage)
+        {
+            if (link.isEmpty())
+                new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
+            else
+                new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
+        }
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
@@ -223,27 +258,6 @@ public class ProfileSettings extends AppCompatActivity {
         startActivityForResult(photoPickerIntent, Global.RQ_GALLERY);
     }
 
-    private void uploadToServer(String filePath) {
-        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
-        TodoApi uploadAPIs = retrofit.create(TodoApi.class);
-        //Create a file object using file path
-        File file = new File(filePath);
-        // Create a request body with file and image media type
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-        // Create MultipartBody.Part using file request-body,file name and part name
-        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-        //Create request body with text description and text media type
-        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-        //
-        Call call = uploadAPIs.uploadImage(part, description);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {}
-            @Override
-            public void onFailure(Call call, Throwable t) {}
-        });
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -256,6 +270,7 @@ public class ProfileSettings extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         ImageView settingsImage = (ImageView) findViewById(R.id.settings_image);
                         settingsImage.setImageBitmap(bitmap);
+                        uriImage = selectedImage;
                         uploadImage=true;
                     } catch (IOException e) {
                         Toast.makeText(ProfileSettings.this.getBaseContext(), "Error loading image", Toast.LENGTH_LONG).show();
@@ -263,6 +278,22 @@ public class ProfileSettings extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    // And to convert the image URI to the direct file system path of the image file
+    public String getRealPathFromURI(Uri contentUri) {
+
+        // can post image
+        String [] proj={MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery( contentUri,
+                proj, // Which columns to return
+                null,       // WHERE clause; which rows to return (all rows)
+                null,       // WHERE clause selection arguments (none)
+                null); // Order-by clause (ascending by name)
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+
+        return cursor.getString(column_index);
     }
 
 }

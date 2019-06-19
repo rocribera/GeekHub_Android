@@ -146,10 +146,10 @@ public interface TodoApi {
     Call<String> editPost(@Path("id") String id,@Body Post desc);
 
     @GET("/images/{idImage}")
-    Call<String> getImage(@Path("idImage") String idImage);
+    Call<ResponseBody> getImage(@Path("idImage") String idImage);
 
     @Multipart
     @POST("/images")
-    Call<ResponseBody> uploadImage(@Part MultipartBody.Part file, @Part("name") RequestBody requestBody);
+    Call<String> uploadImage(@Part MultipartBody.Part image);
 }
 
