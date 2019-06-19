@@ -60,5 +60,6 @@
     <string name="user_unblock">Unblock User</string>
     <string name="user_otherBlock">This user blocked you</string>
     <string name="chats">Chats</string>
+    <string name="gallery_icon">Gallery</string>
 
 </resources>

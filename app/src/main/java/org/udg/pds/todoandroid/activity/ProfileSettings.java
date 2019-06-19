@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -24,23 +26,32 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
+import org.udg.pds.todoandroid.util.Global;
+import org.udg.pds.todoandroid.util.NetworkClient;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileSettings extends AppCompatActivity {
 
     TodoApi mTodoService;
-
     String originalUsername;
     String originalDescription;
     String originalImageLink;
+    boolean uploadImage;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
+        uploadImage = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_settings);
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
@@ -61,11 +72,11 @@ public class ProfileSettings extends AppCompatActivity {
         linkText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId== EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     // To clear focus, probably exists a better way for just remove the cursor
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-                    ConstraintLayout cl =findViewById(R.id.focusable_settings_layout);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    ConstraintLayout cl = findViewById(R.id.focusable_settings_layout);
                     cl.requestFocus();
                 }
                 return false;
@@ -83,23 +94,19 @@ public class ProfileSettings extends AppCompatActivity {
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(link);
                     else
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(originalImageLink);
+                    uploadImage = false;
                 }
             }
         });
 
-    }
+        ImageView gallery = (ImageView) findViewById(R.id.gallery_icon);
+        gallery.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getImageFromGallery();
+            }
+        });
 
-    @Override
-    public void onStart() {
-        super.onStart();
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
-        getOriginalUserInfo();
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
         getOriginalUserInfo();
     }
 
@@ -207,6 +214,54 @@ public class ProfileSettings extends AppCompatActivity {
         }
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
+        }
+    }
+
+    private void getImageFromGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, Global.RQ_GALLERY);
+    }
+
+    private void uploadToServer(String filePath) {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(this);
+        TodoApi uploadAPIs = retrofit.create(TodoApi.class);
+        //Create a file object using file path
+        File file = new File(filePath);
+        // Create a request body with file and image media type
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        // Create MultipartBody.Part using file request-body,file name and part name
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
+        //Create request body with text description and text media type
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
+        //
+        Call call = uploadAPIs.uploadImage(part, description);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {}
+            @Override
+            public void onFailure(Call call, Throwable t) {}
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode) {
+                case Global.RQ_GALLERY:
+                    Uri selectedImage = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                        ImageView settingsImage = (ImageView) findViewById(R.id.settings_image);
+                        settingsImage.setImageBitmap(bitmap);
+                        uploadImage=true;
+                    } catch (IOException e) {
+                        Toast.makeText(ProfileSettings.this.getBaseContext(), "Error loading image", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+            }
         }
     }
 

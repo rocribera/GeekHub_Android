@@ -1,7 +1,7 @@
 
 package org.udg.pds.todoandroid.fragment;
 
-import android.app.Activity;
+import  android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,9 +30,9 @@ import org.udg.pds.todoandroid.activity.Login;
 import org.udg.pds.todoandroid.activity.ProfileSettings;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
+import org.udg.pds.todoandroid.util.Global;
 
 import java.io.InputStream;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,6 +83,23 @@ public class UserProfile extends Fragment {
                 UserProfilePosts fragment = new UserProfilePosts();
                 Bundle bundle = new Bundle();
                 bundle.putInt("type",1);
+                fragment.setArguments(bundle);
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.userProfileContent, fragment)
+                        .commit();
+            }
+        });
+        buttonPostsSubscribed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonGames.setTextColor(Color.LTGRAY);
+                buttonOwnPosts.setTextColor(Color.LTGRAY);
+                buttonPostsSubscribed.setTextColor(Color.BLACK);
+                content.removeAllViews();
+                UserProfilePosts fragment = new UserProfilePosts();
+                Bundle bundle = new Bundle();
+                bundle.putInt("type",2);
                 fragment.setArguments(bundle);
                 getChildFragmentManager()
                         .beginTransaction()

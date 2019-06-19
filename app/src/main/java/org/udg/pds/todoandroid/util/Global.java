@@ -23,6 +23,7 @@ public class Global {
     public static final int RQ_ADD_TASK = 1;
     public static final int RQ_ADD_POST = 2;
     public static final int RQ_DELETE_POST = 3;
+    public static final int RQ_GALLERY = 3;
 
     // IMPORTANT: you have to change the value of BASE_URL_PORTFORWARDING when deploying the app
     // OPENSHIFT
@@ -34,8 +35,8 @@ public class Global {
     // For debugging with real device using port forwarding
     // https://developer.chrome.com/devtools/docs/remote-debugging?hl=de#port-forwarding
 
-    public static final String BASE_URL_PORTFORWARDING = "http://localhost:8080";
-    //public static final String BASE_URL_PORTFORWARDING = "http://private-8af88-geekhub.apiary-mock.com";
+    // public static final String BASE_URL_PORTFORWARDING = "http://localhost:8080";
+    public static final String BASE_URL_PORTFORWARDING = "http://private-8af88-geekhub.apiary-mock.com";
     public static final String BASE_URL_GENYMOTION = "http://10.0.3.2:8080";
 
 }

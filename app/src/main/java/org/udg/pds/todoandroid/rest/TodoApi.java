@@ -12,11 +12,16 @@ import org.udg.pds.todoandroid.entity.UserRegister;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 /**
@@ -139,5 +144,12 @@ public interface TodoApi {
 
     @POST("/posts/{id}")
     Call<String> editPost(@Path("id") String id,@Body Post desc);
+
+    @GET("/images/{idImage}")
+    Call<String> getImage(@Path("idImage") String idImage);
+
+    @Multipart
+    @POST("/images")
+    Call<ResponseBody> uploadImage(@Part MultipartBody.Part file, @Part("name") RequestBody requestBody);
 }
 
