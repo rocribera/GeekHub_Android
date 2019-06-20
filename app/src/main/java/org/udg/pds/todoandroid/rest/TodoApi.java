@@ -1,5 +1,7 @@
 package org.udg.pds.todoandroid.rest;
 
+import android.database.Observable;
+
 import org.udg.pds.todoandroid.entity.ChatInfo;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.IdObject;
@@ -28,6 +30,7 @@ import retrofit2.http.Path;
  * Created by imartin on 13/02/17.
  */
 public interface TodoApi {
+
     @POST("/users/login")
     Call<User> login(@Body UserLogin login);
 
@@ -149,7 +152,7 @@ public interface TodoApi {
     Call<ResponseBody> getImage(@Path("idImage") String idImage);
 
     @Multipart
-    @POST("/upload")
-    Call<ResponseBody> uploadImage(@Part MultipartBody.Part file);
+    @POST("/images")
+    Call<String> uploadImage(@Part MultipartBody.Part file);
 }
 
