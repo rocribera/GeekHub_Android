@@ -149,7 +149,7 @@ public interface TodoApi {
     Call<ResponseBody> getImage(@Path("idImage") String idImage);
 
     @Multipart
-    @POST("/images")
-    Call<String> uploadImage(@Part MultipartBody.Part image);
+    @POST("/upload")
+    Call<ResponseBody> uploadImage(@Part MultipartBody.Part file);
 }
 

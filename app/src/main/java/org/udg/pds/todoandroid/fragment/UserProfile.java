@@ -268,7 +268,7 @@ public class UserProfile extends Fragment {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        if (user.uploadedImage)
+        if (user.updatedImage)
             showImage(user);
         else if (user.image!=null)
             new UserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
@@ -276,7 +276,6 @@ public class UserProfile extends Fragment {
 
     private void showImage(User u)
     {
-        InputStream is=null;
         Call<ResponseBody> call = mTodoService.getImage(u.image);
         call.enqueue(new Callback<ResponseBody>() {
             @Override

@@ -28,14 +28,18 @@ import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 import org.udg.pds.todoandroid.util.Global;
+import org.udg.pds.todoandroid.util.JSON;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -131,15 +135,20 @@ public class ProfileSettings extends AppCompatActivity {
         else
             user.image=image.getText().toString();
 
-        user.uploadedImage=uploadImage;
+        user.updatedImage=uploadImage;
 
         if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty() && !uploadImage)
             Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
-        else
-            setUserSettings(user);
+        else {
+            if (setUserSettings(user))
+            {
+                if (setUploadedImage());
+
+            }
+        }
     }
 
-    public void setUserSettings(User user)
+    public boolean setUserSettings(User user)
     {
         Call<String> postCall = mTodoService.updateUser(user);
         postCall.enqueue(new Callback<String>() {
@@ -152,14 +161,15 @@ public class ProfileSettings extends AppCompatActivity {
                         //Create a file object using file path
                         File file = new File(uriPath);
                         // Create a request body with file and image media type
-                        RequestBody requestFile =
-                                RequestBody.create(
-                                        MediaType.parse(getContentResolver().getType(uriImage)),
-                                        file
-                                );
-                        MultipartBody.Part image=MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
                         // Execute the call
-                        Call<String> call = mTodoService.uploadImage(image);
+                        try {
+                            JSON.toJSON(uriImage);
+                        }
+                        catch (Exception e) {}
+
+                        Call<String> call = mTodoService.uploadImage(filePart);
                         call.enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
@@ -221,13 +231,34 @@ public class ProfileSettings extends AppCompatActivity {
         linkImage.setHint(u.image);
 
         String link = linkImage.getText().toString();
-        if (!uploadImage)
+        if (!u.updatedImage)
         {
             if (link.isEmpty())
                 new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
             else
                 new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
         }
+        else
+            showImage(u);
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=findViewById(R.id.settings_image);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getBaseContext(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
@@ -286,10 +317,10 @@ public class ProfileSettings extends AppCompatActivity {
         // can post image
         String [] proj={MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery( contentUri,
-                proj, // Which columns to return
+                proj,                // Which columns to return
                 null,       // WHERE clause; which rows to return (all rows)
-                null,       // WHERE clause selection arguments (none)
-                null); // Order-by clause (ascending by name)
+                null,    // WHERE clause selection arguments (none)
+                null);      // Order-by clause (ascending by name)
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
 

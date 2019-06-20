@@ -10,5 +10,5 @@ public class User {
   public List<Game> games;
   public List<Post> followedPosts;
   public float valoration;
-  public boolean uploadedImage;
+  public boolean updatedImage;
 }
