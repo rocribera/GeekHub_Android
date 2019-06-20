@@ -109,14 +109,10 @@ public class ProfileSettings extends AppCompatActivity {
         ImageView gallery = (ImageView) findViewById(R.id.gallery_icon);
         gallery.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(ProfileSettings.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileSettings.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                    }
-                    else {
-                        ActivityCompat.requestPermissions(ProfileSettings.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                    }
-                }
+                if (ContextCompat.checkSelfPermission(ProfileSettings.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                    ActivityCompat.requestPermissions(ProfileSettings.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                else
+                    getImageFromGallery();
             }
         });
 
@@ -132,7 +128,6 @@ public class ProfileSettings extends AppCompatActivity {
                 if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getImageFromGallery();
                 }
-                else {}
                 break;
             }
         }
@@ -164,15 +159,7 @@ public class ProfileSettings extends AppCompatActivity {
         if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty() && !uploadImage)
             Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
         else {
-            setUploadImage();
-            /*
-            String realPath = getRealPathFromURI(uriImage);
-            File file = new File(realPath);
-            Toast.makeText(ProfileSettings.this.getBaseContext(), file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-            FileUploadService.uploadFile(file, "file");
-            // normalment setUserSettings(user);
-            */
+            setUserSettings(user);
         }
     }
 
@@ -185,7 +172,6 @@ public class ProfileSettings extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (uploadImage)
                         setUploadImage();
-                        // FileUploadService.uploadFile(new File(uriImage.getPath()), "file");
                     else
                     {
                         Intent returnIntent = new Intent();
@@ -205,9 +191,8 @@ public class ProfileSettings extends AppCompatActivity {
     {
         String realPath = getRealPathFromURI(uriImage);
         File file = new File(realPath);
-        Toast.makeText(ProfileSettings.this.getBaseContext(), file.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),file);
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(uriImage)),file);
         MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
 
         Call<String> call = mTodoService.uploadImage(multipartBody);
