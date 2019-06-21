@@ -89,11 +89,8 @@ public class OpenChatsRecycle extends Fragment {
                     Toast.makeText(OpenChatsRecycle.this.getContext(), "Error reading chats", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
-            public void onFailure(Call<List<ChatInfo>> call, Throwable t) {
-
-            }
+            public void onFailure(Call<List<ChatInfo>> call, Throwable t) {}
         });
     }
 
@@ -130,6 +127,7 @@ public class OpenChatsRecycle extends Fragment {
         @Override
         public void onBindViewHolder(ChatInfoViewHolder holder, final int position) {
             holder.name.setText(list.get(position).otherUser.name);
+
             if (!list.get(position).otherUser.updatedImage)
                 new DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).otherUser.image);
             else
@@ -141,6 +139,7 @@ public class OpenChatsRecycle extends Fragment {
                     Intent i = new Intent(OpenChatsRecycle.this.getActivity(), MessageListActivity.class);
                     i.putExtra("userId", list.get(position).otherUser.id);
                     i.putExtra("myId", list.get(position).myUserId);
+                    i.putExtra("active", list.get(position).chatActive);
                     i.putExtra("active", list.get(position).chatActive);
                     startActivity(i);
                 }
