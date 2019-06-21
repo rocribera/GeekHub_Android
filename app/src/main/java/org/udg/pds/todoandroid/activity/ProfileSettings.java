@@ -54,6 +54,7 @@ public class ProfileSettings extends AppCompatActivity {
     String originalUsername;
     String originalDescription;
     String originalImageLink;
+    boolean originalUploadImage;
     Uri uriImage;
     boolean uploadImage;
 
@@ -168,7 +169,10 @@ public class ProfileSettings extends AppCompatActivity {
         else
             user.image = image.getText().toString();
 
-        user.updatedImage = uploadImage;
+        if(!uploadImage && image.getText().toString().isEmpty())
+            user.updatedImage = originalUploadImage;
+        else
+            user.updatedImage = uploadImage;
 
         if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty() && !uploadImage)
             Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
@@ -269,6 +273,7 @@ public class ProfileSettings extends AppCompatActivity {
         originalUsername=u.name;
         originalDescription=u.description;
         originalImageLink=u.image;
+        originalUploadImage=u.updatedImage;
 
         username.setHint(u.name);
         description.setHint(u.description);

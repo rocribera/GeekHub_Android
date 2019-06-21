@@ -131,9 +131,9 @@ public class OpenChatsRecycle extends Fragment {
         public void onBindViewHolder(ChatInfoViewHolder holder, final int position) {
             holder.name.setText(list.get(position).otherUser.name);
             if (!list.get(position).otherUser.updatedImage)
-                new DownloadImageFromInternet((ImageView) holder.logo).execute(list.get(position).otherUser.image);
+                new DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).otherUser.image);
             else
-                showImage(list.get(position).otherUser);
+                showImage(list.get(position).otherUser, holder.logo);
 
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -209,7 +209,7 @@ public class OpenChatsRecycle extends Fragment {
         }
     }
 
-    private void showImage(User u)
+    private void showImage(User u, ImageView iv)
     {
         Call<ResponseBody> call = mTodoService.getImage(u.image);
         call.enqueue(new Callback<ResponseBody>() {
@@ -217,7 +217,6 @@ public class OpenChatsRecycle extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
                     Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
-                    ImageView iv=getActivity().findViewById(R.id.chat_userlogo);
                     iv.setImageBitmap(bi);
                 } else {
                     Toast.makeText(getActivity(), "Error downloading profile image", Toast.LENGTH_LONG).show();

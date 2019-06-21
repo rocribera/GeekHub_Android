@@ -181,9 +181,6 @@ public class OtherUserProfile extends AppCompatActivity {
                 if(response.isSuccessful()){
                     User u = response.body();
                     showProfileUserInfo(u);
-                    if (u.updatedImage)
-                        showImage(u);
-                    //UserProfile.this.showGameList(response.body().games);
                 } else {
                     Toast.makeText(getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
@@ -228,7 +225,10 @@ public class OtherUserProfile extends AppCompatActivity {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        if(user.image!=null) new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
+        if (user.updatedImage)
+            showImage(user);
+        else if(user.image!=null)
+            new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
 
         // Rating popup
 
