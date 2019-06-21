@@ -1,5 +1,7 @@
 package org.udg.pds.todoandroid.rest;
 
+import android.database.Observable;
+
 import org.udg.pds.todoandroid.entity.ChatInfo;
 import org.udg.pds.todoandroid.entity.Game;
 import org.udg.pds.todoandroid.entity.IdObject;
@@ -12,17 +14,22 @@ import org.udg.pds.todoandroid.entity.UserRegister;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 /**
  * Created by imartin on 13/02/17.
  */
 public interface TodoApi {
+
     @POST("/users/login")
     Call<User> login(@Body UserLogin login);
 
@@ -139,5 +146,12 @@ public interface TodoApi {
 
     @POST("/posts/{id}")
     Call<String> editPost(@Path("id") String id,@Body Post desc);
+
+    @GET("/images/{idImage}")
+    Call<ResponseBody> getImage(@Path("idImage") String idImage);
+
+    @Multipart
+    @POST("/images")
+    Call<String> uploadImage(@Part MultipartBody.Part file);
 }
 

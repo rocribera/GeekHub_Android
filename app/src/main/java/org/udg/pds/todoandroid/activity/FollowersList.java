@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -125,7 +126,12 @@ public class FollowersList extends AppCompatActivity {
         @Override
         public void onBindViewHolder(FollowersList.UserViewHolder holder, final int position) {
             holder.username.setText(list.get(position).name);
-            new FollowersList.DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).image);
+
+            if (!list.get(position).updatedImage)
+                new FollowersList.DownloadImageFromInternet((ImageView)holder.logo).execute(list.get(position).image);
+            else
+                showImage(list.get(position),holder.logo);
+
             holder.constraint.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -238,4 +244,23 @@ public class FollowersList extends AppCompatActivity {
             imageView.setImageBitmap(result);
         }
     }
+
+    private void showImage(User u, ImageView iv)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getBaseContext(), "Error downloading image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
+    }
+
 }

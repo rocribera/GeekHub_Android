@@ -1,13 +1,23 @@
 package org.udg.pds.todoandroid.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -24,9 +34,16 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
+import org.udg.pds.todoandroid.util.Global;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,13 +51,18 @@ import retrofit2.Response;
 public class ProfileSettings extends AppCompatActivity {
 
     TodoApi mTodoService;
-
     String originalUsername;
     String originalDescription;
     String originalImageLink;
+    boolean originalUploadImage;
+    Uri uriImage;
+    boolean uploadImage;
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE=0;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
+        uploadImage = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_settings);
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
@@ -61,11 +83,11 @@ public class ProfileSettings extends AppCompatActivity {
         linkText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId== EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     // To clear focus, probably exists a better way for just remove the cursor
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(),0);
-                    ConstraintLayout cl =findViewById(R.id.focusable_settings_layout);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    ConstraintLayout cl = findViewById(R.id.focusable_settings_layout);
                     cl.requestFocus();
                 }
                 return false;
@@ -76,31 +98,44 @@ public class ProfileSettings extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    // To update the image
+                    // Get link
                     EditText linkImage = findViewById(R.id.settings_link);
                     String link = linkImage.getText().toString();
-                    if (!link.isEmpty())
+
+                    // To update the image
+                    if (!link.isEmpty()) {
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(link);
-                    else
-                        new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(originalImageLink);
+                        uploadImage = false;
+                    }
                 }
             }
         });
 
-    }
+        ImageView gallery = (ImageView) findViewById(R.id.gallery_icon);
+        gallery.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(ProfileSettings.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                    ActivityCompat.requestPermissions(ProfileSettings.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                else
+                    getImageFromGallery();
+            }
+        });
 
-    @Override
-    public void onStart() {
-        super.onStart();
         mTodoService = ((TodoApp) this.getApplication()).getAPI();
         getOriginalUserInfo();
     }
 
-
     @Override
-    public void onResume() {
-        super.onResume();
-        getOriginalUserInfo();
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch(requestCode)
+        {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery();
+                }
+                break;
+            }
+        }
     }
 
     public void updateUserSettings() {
@@ -109,25 +144,50 @@ public class ProfileSettings extends AppCompatActivity {
         EditText description = findViewById(R.id.settings_description);
         EditText image = findViewById(R.id.settings_link);
 
+        if (!image.getText().toString().isEmpty()) {
+            ImageView iv = findViewById(R.id.settings_image);
+            new ProfileSettings.DownloadImageFromInternet(iv).execute(image.toString());
+            if (!hasImage(iv))
+            {
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "Broken link", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
         if (username.getText().toString().isEmpty())
-            user.name=originalUsername;
+            user.name = originalUsername;
         else
-            user.name=username.getText().toString();
+            user.name = username.getText().toString();
 
         if (description.getText().toString().isEmpty())
-            user.description=originalDescription;
+            user.description = originalDescription;
         else
-            user.description=description.getText().toString();
+            user.description = description.getText().toString();
 
         if (image.getText().toString().isEmpty())
-            user.image=originalImageLink;
+            user.image = originalImageLink;
         else
-            user.image=image.getText().toString();
+            user.image = image.getText().toString();
 
-        if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty())
-            Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
+        if(!uploadImage && image.getText().toString().isEmpty())
+            user.updatedImage = originalUploadImage;
         else
+            user.updatedImage = uploadImage;
+
+        if (username.getText().toString().isEmpty() && description.getText().toString().isEmpty() && image.getText().toString().isEmpty() && !uploadImage)
+            Toast.makeText(ProfileSettings.this.getBaseContext(), "Nothing changed", Toast.LENGTH_LONG).show();
+        else {
             setUserSettings(user);
+        }
+    }
+
+    private boolean hasImage(@NonNull ImageView view) {
+        Drawable drawable = view.getDrawable();
+        boolean hasImage = (drawable != null);
+        if (hasImage && (drawable instanceof BitmapDrawable)) {
+            hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+        }
+        return hasImage;
     }
 
     public void setUserSettings(User user)
@@ -137,14 +197,51 @@ public class ProfileSettings extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> postCall, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Intent returnIntent = new Intent();
-                    setResult(Activity.RESULT_OK,returnIntent);
-                    finish();
+                    if (uploadImage)
+                        setUploadImage();
+                    else
+                    {
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }
                 }
             }
             @Override
             public void onFailure(Call<String> postCall, Throwable t) {
-                Toast.makeText(ProfileSettings.this.getBaseContext(), "An error occurred! Try again later", Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "Fail updating the user", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void setUploadImage()
+    {
+        String realPath = getRealPathFromURI(uriImage);
+        File file = new File(realPath);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(uriImage)),file);
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+
+        Call<String> call = mTodoService.uploadImage(multipartBody);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
+                    Intent i = new Intent();
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+                else {
+                    Toast.makeText(ProfileSettings.this.getBaseContext(), "Error uploading image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                System.out.println(t.getMessage());
+                System.out.println(t.getCause());
+                System.out.println(t.getLocalizedMessage());
+                System.out.println(t.getStackTrace().toString());
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "Error uploading image", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -176,16 +273,42 @@ public class ProfileSettings extends AppCompatActivity {
         originalUsername=u.name;
         originalDescription=u.description;
         originalImageLink=u.image;
+        originalUploadImage=u.updatedImage;
 
         username.setHint(u.name);
         description.setHint(u.description);
-        linkImage.setHint(u.image);
+        if (!u.updatedImage)
+            linkImage.setHint(u.image);
 
         String link = linkImage.getText().toString();
-        if (link.isEmpty())
-            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
+        if (!u.updatedImage)
+        {
+            if (link.isEmpty())
+                new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(originalImageLink);
+            else
+                new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
+        }
         else
-            new ProfileSettings.DownloadImageFromInternet((ImageView) this.findViewById(R.id.settings_image)).execute(link);
+            showImage(u);
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=findViewById(R.id.settings_image);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getBaseContext(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
@@ -208,6 +331,52 @@ public class ProfileSettings extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
+    }
+
+    private void getImageFromGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, Global.RQ_GALLERY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode) {
+                case Global.RQ_GALLERY:
+                    Uri selectedImage = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                        ImageView settingsImage = (ImageView) findViewById(R.id.settings_image);
+                        settingsImage.setImageBitmap(bitmap);
+                        uriImage = selectedImage;
+                        EditText settings_link = (EditText) findViewById(R.id.settings_link);
+                        settings_link.setHint("");
+                        uploadImage=true;
+                    } catch (IOException e) {
+                        Toast.makeText(ProfileSettings.this.getBaseContext(), "Error loading image", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+            }
+        }
+    }
+
+    // And to convert the image URI to the direct file system path of the image file
+    public String getRealPathFromURI(Uri contentUri) {
+
+        // can post image
+        String [] proj={MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery( contentUri,
+                proj,                // Which columns to return
+                null,       // WHERE clause; which rows to return (all rows)
+                null,    // WHERE clause selection arguments (none)
+                null);      // Order-by clause (ascending by name)
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+
+        return cursor.getString(column_index);
     }
 
 }

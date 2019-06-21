@@ -1,7 +1,7 @@
 
 package org.udg.pds.todoandroid.fragment;
 
-import android.app.Activity;
+import  android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +33,7 @@ import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,7 +108,23 @@ public class UserProfile extends Fragment {
                         .commit();
             }
         });
-
+        buttonPostsSubscribed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonGames.setTextColor(Color.LTGRAY);
+                buttonOwnPosts.setTextColor(Color.LTGRAY);
+                buttonPostsSubscribed.setTextColor(Color.BLACK);
+                content.removeAllViews();
+                UserProfilePosts fragment = new UserProfilePosts();
+                Bundle bundle = new Bundle();
+                bundle.putInt("type",2);
+                fragment.setArguments(bundle);
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.userProfileContent, fragment)
+                        .commit();
+            }
+        });
         ImageView buttonSettings = (ImageView) rootView.findViewById(R.id.settings);
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +268,29 @@ public class UserProfile extends Fragment {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        if(user.image!=null) new UserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
+        if (user.updatedImage)
+            showImage(user);
+        else if (user.image!=null)
+            new UserProfile.DownloadImageFromInternet((ImageView) rootView.findViewById(R.id.user_image)).execute(user.image);
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=rootView.findViewById(R.id.user_image);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(UserProfile.this.getActivity().getBaseContext(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
     }
 
     private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
@@ -273,10 +312,8 @@ public class UserProfile extends Fragment {
             }
             return bimage;
         }
-
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
     }
-
 }

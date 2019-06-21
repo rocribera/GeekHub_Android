@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/focusable_settings_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -148,5 +149,13 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/settings_image" />
+
+    <ImageView
+        android:id="@+id/gallery_icon"
+        android:layout_width="46dp"
+        android:layout_height="37dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toTopOf="@+id/settings_image"
+        app:srcCompat="@drawable/ic_menu_gallery" />
 
 </android.support.constraint.ConstraintLayout>

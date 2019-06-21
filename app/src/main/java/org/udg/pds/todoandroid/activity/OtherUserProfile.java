@@ -28,6 +28,7 @@ import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -178,8 +179,8 @@ public class OtherUserProfile extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
-                    showProfileUserInfo(response.body());
-                    //UserProfile.this.showGameList(response.body().games);
+                    User u = response.body();
+                    showProfileUserInfo(u);
                 } else {
                     Toast.makeText(getBaseContext(), "Error reading user", Toast.LENGTH_LONG).show();
                 }
@@ -188,6 +189,25 @@ public class OtherUserProfile extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
             }
+        });
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=findViewById(R.id.user_image);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getBaseContext(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
         });
     }
 
@@ -205,7 +225,10 @@ public class OtherUserProfile extends AppCompatActivity {
         userUsername.setText(user.name);
         userDescription.setText(user.description);
         userRating.setRating(user.valoration);
-        if(user.image!=null) new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
+        if (user.updatedImage)
+            showImage(user);
+        else if(user.image!=null)
+            new OtherUserProfile.DownloadImageFromInternet((ImageView) this.findViewById(R.id.user_image)).execute(user.image);
 
         // Rating popup
 
