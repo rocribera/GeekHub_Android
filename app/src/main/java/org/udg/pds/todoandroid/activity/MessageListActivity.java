@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -206,10 +207,12 @@ public class MessageListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
-                    ((TextView)findViewById(R.id.chat_username)).setText(response.body().name);
-
-                    new MessageListActivity.DownloadImageFromInternet((ImageView)findViewById(R.id.chat_userlogo)).execute(response.body().image);
-
+                    User u = response.body();
+                    ((TextView)findViewById(R.id.chat_username)).setText(u.name);
+                    if (u.updatedImage)
+                        showImage(u);
+                    else
+                        new MessageListActivity.DownloadImageFromInternet((ImageView)findViewById(R.id.chat_userlogo)).execute(u.image);
                 } else {
                     Toast.makeText(getBaseContext(), "Error reading messages", Toast.LENGTH_LONG).show();
                 }
@@ -220,6 +223,25 @@ public class MessageListActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=findViewById(R.id.chat_userlogo);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getBaseContext(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
     }
 
     public void getMessages(){

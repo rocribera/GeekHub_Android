@@ -8,10 +8,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -94,14 +97,15 @@ public class ProfileSettings extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    // To update the image
+                    // Get link
                     EditText linkImage = findViewById(R.id.settings_link);
                     String link = linkImage.getText().toString();
-                    if (!link.isEmpty())
+
+                    // To update the image
+                    if (!link.isEmpty()) {
                         new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(link);
-                    else
-                        new ProfileSettings.DownloadImageFromInternet((ImageView) findViewById(R.id.settings_image)).execute(originalImageLink);
-                    uploadImage = false;
+                        uploadImage = false;
+                    }
                 }
             }
         });
@@ -139,6 +143,16 @@ public class ProfileSettings extends AppCompatActivity {
         EditText description = findViewById(R.id.settings_description);
         EditText image = findViewById(R.id.settings_link);
 
+        if (!image.getText().toString().isEmpty()) {
+            ImageView iv = findViewById(R.id.settings_image);
+            new ProfileSettings.DownloadImageFromInternet(iv).execute(image.toString());
+            if (!hasImage(iv))
+            {
+                Toast.makeText(ProfileSettings.this.getBaseContext(), "Broken link", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
         if (username.getText().toString().isEmpty())
             user.name = originalUsername;
         else
@@ -161,6 +175,15 @@ public class ProfileSettings extends AppCompatActivity {
         else {
             setUserSettings(user);
         }
+    }
+
+    private boolean hasImage(@NonNull ImageView view) {
+        Drawable drawable = view.getDrawable();
+        boolean hasImage = (drawable != null);
+        if (hasImage && (drawable instanceof BitmapDrawable)) {
+            hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
+        }
+        return hasImage;
     }
 
     public void setUserSettings(User user)
@@ -249,7 +272,8 @@ public class ProfileSettings extends AppCompatActivity {
 
         username.setHint(u.name);
         description.setHint(u.description);
-        linkImage.setHint(u.image);
+        if (!u.updatedImage)
+            linkImage.setHint(u.image);
 
         String link = linkImage.getText().toString();
         if (!u.updatedImage)
@@ -323,6 +347,8 @@ public class ProfileSettings extends AppCompatActivity {
                         ImageView settingsImage = (ImageView) findViewById(R.id.settings_image);
                         settingsImage.setImageBitmap(bitmap);
                         uriImage = selectedImage;
+                        EditText settings_link = (EditText) findViewById(R.id.settings_link);
+                        settings_link.setHint("");
                         uploadImage=true;
                     } catch (IOException e) {
                         Toast.makeText(ProfileSettings.this.getBaseContext(), "Error loading image", Toast.LENGTH_LONG).show();

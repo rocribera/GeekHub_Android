@@ -20,12 +20,14 @@ import org.udg.pds.todoandroid.R;
 import org.udg.pds.todoandroid.TodoApp;
 import org.udg.pds.todoandroid.activity.MessageListActivity;
 import org.udg.pds.todoandroid.entity.ChatInfo;
+import org.udg.pds.todoandroid.entity.User;
 import org.udg.pds.todoandroid.rest.TodoApi;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -128,7 +130,10 @@ public class OpenChatsRecycle extends Fragment {
         @Override
         public void onBindViewHolder(ChatInfoViewHolder holder, final int position) {
             holder.name.setText(list.get(position).otherUser.name);
-            new DownloadImageFromInternet((ImageView) holder.logo).execute(list.get(position).otherUser.image);
+            if (!list.get(position).otherUser.updatedImage)
+                new DownloadImageFromInternet((ImageView) holder.logo).execute(list.get(position).otherUser.image);
+            else
+                showImage(list.get(position).otherUser);
 
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -202,6 +207,25 @@ public class OpenChatsRecycle extends Fragment {
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
+    }
+
+    private void showImage(User u)
+    {
+        Call<ResponseBody> call = mTodoService.getImage(u.image);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Bitmap bi = BitmapFactory.decodeStream(response.body().byteStream());
+                    ImageView iv=getActivity().findViewById(R.id.chat_userlogo);
+                    iv.setImageBitmap(bi);
+                } else {
+                    Toast.makeText(getActivity(), "Error downloading profile image", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {}
+        });
     }
 }
 
